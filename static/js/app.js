@@ -54,7 +54,7 @@
       if(!queryInfo.date || !queryInfo.longitude) {
         return;
       }
-      var url = `https://api.darksky.net/forecast/472f1ba38a5f3d13407fdb589d975c8c/${queryInfo.latitude},${queryInfo.longitude},${queryInfo.date.getTime()/1000|0}?exclude=minutely,hourly,flags`;
+      var url = `https://crossorigin.me/https://api.darksky.net/forecast/472f1ba38a5f3d13407fdb589d975c8c/${queryInfo.latitude},${queryInfo.longitude},${queryInfo.date.getTime()/1000|0}?exclude=minutely,hourly,flags`;
       $http.get(url)
         .then(function success(response) {
           ds.data = response.data;
