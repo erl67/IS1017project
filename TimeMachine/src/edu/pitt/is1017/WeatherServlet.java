@@ -49,7 +49,7 @@ public class WeatherServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 		
-		response.getWriter().append("/n<BR>" + url);		
+		response.getWriter().append("\n"  + url);		
 	}
 
 	/**
