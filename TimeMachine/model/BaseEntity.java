@@ -9,12 +9,11 @@ import javax.persistence.*;
  *
  */
 @Entity
-
 public class BaseEntity implements Serializable {
 
-	
+	@Id
+	@GeneratedValue
 	private int id;
-	private Double temp;
 	private static final long serialVersionUID = 1L;
 
 	public BaseEntity() {
@@ -27,12 +26,5 @@ public class BaseEntity implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}   
-	public Double getTemp() {
-		return this.temp;
-	}
-
-	public void setTemp(Double temp) {
-		this.temp = temp;
-	}
    
 }

@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(description = "Process weather data from DarkSky API", urlPatterns = { "/WeatherServlet" })
 public class WeatherServlet extends HttpServlet {
 
-	private String dsKey = "472f1ba38a5f3d13407fdb589d975c8c";
+	private String dsKey = "472f1ba38a5f3d13407fdb589d975c8c/";
 	private String dsUrl = "https://api.darksky.net/forecast/";
 	private String dsLoc = "37.8267,-122.4233,";
 	private String dsTime = "946684800";
@@ -30,12 +30,6 @@ public class WeatherServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	
-	public class Main {
-		public void main(String[] args) {
-			System.out.println("TEST");
-			URLConnectionReader(testURL);
-		}
-	}
 
 	/**
 	 * Default constructor. 
@@ -44,18 +38,26 @@ public class WeatherServlet extends HttpServlet {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void URLConnectionReader(String urlS) {
+	public static void URLConnectionReader(String urlS) {
 		URL url;
 		URLConnection yc;
 		String inputLine;
 		try {
 			url = new URL(urlS);
 			yc = url.openConnection();
-			BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
-			while ((inputLine = in.readLine()) != null)  {
-				System.out.println(inputLine);
+
+			try {
+				BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
+				//inputLine = in.readLine();
+				while ((inputLine = in.readLine()) != null) 
+					System.out.println(inputLine);
+				
+				in.close();
 			}
-			in.close();
+			catch (Exception e){
+				e.printStackTrace();
+			}
+
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
