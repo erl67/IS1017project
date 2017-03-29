@@ -1,4 +1,4 @@
-package edu.pitt.is1017;
+package src.edu.pitt.is1017;
 /**
  * Class Main / tests view models
  * @author ERL67
@@ -16,8 +16,7 @@ import javax.swing.JOptionPane;
 
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
-import edu.pitt.todolist.controller.Controller;
-import edu.pitt.todolist.view.View;
+
 
 
 public class Model {
