@@ -1,4 +1,4 @@
-package src.edu.pitt.is1017;
+package model;
 
 import java.sql.Timestamp;
 import java.util.Vector;
