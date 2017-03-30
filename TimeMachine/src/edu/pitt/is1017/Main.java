@@ -9,8 +9,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 
-import javax.json.JsonException;
+import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonReader;
 
 public class Main {
 
@@ -59,9 +61,19 @@ public class Main {
 		try {
 			BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
 			String jsonText = readAll(rd);
-			JsonObject json = null;
+			
+			//JsonObject json = null;
+//			JsonReader jsonReader = Json.createReader(jsonText);
+//			JsonArray array1 = jsonReader.readArray();
+//			jsonReader.close();
+			
+			JsonArray array = new JsonArray("[1,2,3,4,5]");
+			
 			System.out.println("jsonText= " + jsonText);
-			//JsonObject json = new JsonObject();
+			JsonObject json = new JsonObject(jsonText);
+			JsonArray array = new JsonArray(jsonText);
+			
+			
 			return json;
 		} finally {
 			try {
