@@ -29,9 +29,9 @@ public class Main {
 		WeatherServlet.URLConnectionReader(testURL);
 		//WeatherServlet.URLConnectionReader("http://google.com");
 
-		JsonObject json = readJsonFromUrl(testURL);
-		System.out.println(json.toString());
-		System.out.println(json.get("id"));
+//		JsonObject json = readJsonFromUrl(testURL);
+//		System.out.println(json.toString());
+//		System.out.println(json.get("id"));
 
 	}
 
