@@ -32,6 +32,10 @@
             lc.data = response.data.results[0];
             lc.queryInfo.latitude = lc.data.geometry.location.lat;
             lc.queryInfo.longitude = lc.data.geometry.location.lng;
+            $rootScope.location = {
+              longAddress: lc.data.formatted_address,
+              date: lc.queryInfo.date
+            };
             $rootScope.getData(lc.queryInfo);
           }
         });
@@ -63,5 +67,10 @@
         });
     };
   }]);
+
+  app.controller('DisplayController', function() {
+    var dc = this;
+    dc.dataPoints = [];
+  });
 
 })();

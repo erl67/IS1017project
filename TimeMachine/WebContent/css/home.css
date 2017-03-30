@@ -1,3 +1,21 @@
 .navbar {
   margin-bottom: 0;
 }
+.jumbotron {
+  background-color: #f6f6f6;
+}
+.lg-image {
+  width: 100%;
+  height: 70vh;
+  /*background: url('https://images.unsplash.com/photo-1445264618000-f1e069c5920f');*/
+  background: url('https://images.unsplash.com/photo-1469365556835-3da3db4c253b');
+  background-size: cover;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+#btn-signin {
+  border: .1em solid white;
+  border-radius: .1em;
+  margin-right: .1em;
+}
