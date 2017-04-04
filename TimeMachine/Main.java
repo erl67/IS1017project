@@ -9,9 +9,8 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import javax.json.JsonObject;
 
-import model.*;
+import javax.json.JsonObject;
 
 public class Main {
 
@@ -31,6 +30,8 @@ public class Main {
 		
 		String u;
 		u = LoginServlet.LoginBean("1","1");
+		
+//		u = WeatherServlet.LoginBean("1","1");
 		
 		//WeatherServlet.URLConnectionReader("http://google.com");
 

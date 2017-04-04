@@ -9,7 +9,7 @@ import javax.persistence.Query;
 @Stateless
 public class BaseFacade {
 	
-	@PersistenceContext(unitName="TimeMachine")
+	@PersistenceContext(unitName = "TimeMachine")
 	static EntityManager em;
 	//protected EntityManager em = EntityManagerFactory.createEntityManager();
 	
@@ -21,6 +21,7 @@ public class BaseFacade {
 		
 		String q = "SELECT user_name FROM wx_user WHERE ((user_name=" + user + ") AND (user_pass="+pass+"))";
 		System.out.println(q);
+		
 		Query q1 = null;
 		String u = null;
 		

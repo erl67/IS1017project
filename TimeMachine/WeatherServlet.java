@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
+import javax.ejb.EJB;
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -15,11 +16,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import model.BaseFacade;
+
 /**
  * Servlet implementation class WeatherServlet
  */
 @WebServlet(description = "Process weather data from DarkSky API", urlPatterns = { "/WeatherServlet" })
 public class WeatherServlet extends HttpServlet {
+	
+	@EJB
+	static BaseFacade bf;
 
 	private String dsKey = "472f1ba38a5f3d13407fdb589d975c8c/";
 	private String dsUrl = "https://api.darksky.net/forecast/";
@@ -36,6 +42,11 @@ public class WeatherServlet extends HttpServlet {
 	 */
 	public WeatherServlet() {
 		// TODO Auto-generated constructor stub
+	}
+	
+	@EJB
+	public static String LoginBean (String u, String p){
+		return bf.checkLogin(u, p);
 	}
 
 	public static void URLConnectionReader(String urlS) {
