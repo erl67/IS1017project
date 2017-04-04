@@ -26,9 +26,12 @@ public class Main {
 
 		System.out.println("TEST");
 		WeatherServlet.URLConnectionReader(testURL);
+		
 		//BaseFacade.checkLogin("1", "1");
+		
 		String u;
 		u = LoginServlet.LoginBean("1","1");
+		
 		//WeatherServlet.URLConnectionReader("http://google.com");
 
 //		JsonObject json = readJsonFromUrl(testURL);

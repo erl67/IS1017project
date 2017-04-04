@@ -18,7 +18,8 @@ import model.BaseFacade;
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-
+	@EJB
+	static BaseFacade bf;
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -30,7 +31,7 @@ public class LoginServlet extends HttpServlet {
     
 	@EJB
 	public static String LoginBean (String u, String p){
-		return BaseFacade.checkLogin(u, p);
+		return bf.checkLogin(u, p);
 	}
 
 	/**
