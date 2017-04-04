@@ -1,4 +1,5 @@
-package src.edu.pitt.is1017;
+
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,11 +9,9 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
-
-import javax.json.Json;
-import javax.json.JsonArray;
 import javax.json.JsonObject;
-import javax.json.JsonReader;
+
+import model.*;
 
 public class Main {
 
@@ -27,6 +26,9 @@ public class Main {
 
 		System.out.println("TEST");
 		WeatherServlet.URLConnectionReader(testURL);
+		//BaseFacade.checkLogin("1", "1");
+		String u;
+		u = LoginServlet.LoginBean("1","1");
 		//WeatherServlet.URLConnectionReader("http://google.com");
 
 //		JsonObject json = readJsonFromUrl(testURL);
@@ -62,17 +64,17 @@ public class Main {
 			BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
 			String jsonText = readAll(rd);
 			
-			//JsonObject json = null;
+			JsonObject json = null;
 //			JsonReader jsonReader = Json.createReader(jsonText);
 //			JsonArray array1 = jsonReader.readArray();
 //			jsonReader.close();
 			
-			JsonArray array = new JsonArray("[1,2,3,4,5]");
-			
-			System.out.println("jsonText= " + jsonText);
-			JsonObject json = new JsonObject(jsonText);
-			JsonArray array = new JsonArray(jsonText);
-			
+//			JsonArray array = new JsonArray("[1,2,3,4,5]");
+//			
+//			System.out.println("jsonText= " + jsonText);
+//			JsonObject json = new JsonObject(jsonText);
+//			JsonArray array = new JsonArray(jsonText);
+//			
 			
 			return json;
 		} finally {
