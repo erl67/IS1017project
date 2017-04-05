@@ -1,10 +1,11 @@
 USE erl67is1017;
+####DROP table wx_user, wx_data, wx_hist;
 
 CREATE TABLE IF NOT EXISTS wx_user (
 	id INT PRIMARY KEY NOT NULL UNIQUE AUTO_INCREMENT,
     user_name VARCHAR(20) NOT NULL UNIQUE,
     user_pass VARCHAR(20) NOT NULL
-);
+)  Engine=InnoDB;
 
 INSERT INTO wx_user(user_name, user_pass) VALUES ('Guest', '');
 INSERT INTO wx_user(user_name, user_pass) VALUES ('Eric', '123');
@@ -47,4 +48,14 @@ CREATE TABLE IF NOT EXISTS wx_data (
     pressure DOUBLE,
 	fk_user_id INT,
 	CONSTRAINT fk_uid FOREIGN KEY (fk_user_id) REFERENCES wx_user (id)
-);
+)  Engine=InnoDB;
+
+CREATE TABLE IF NOT EXISTS wx_hist (
+    id INT PRIMARY KEY NOT NULL UNIQUE AUTO_INCREMENT,
+	fk_user int not null,
+    title VARCHAR(50),
+	latitude VARCHAR(50),
+    longitude VARCHAR(50),
+    date DATE,
+    CONSTRAINT fk_uh FOREIGN KEY (fk_user) REFERENCES wx_user (id)
+) Engine=InnoDB;

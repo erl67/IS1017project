@@ -23,20 +23,18 @@ public class LoginServlet extends HttpServlet {
 	@EJB
 	BaseFacade bf;
 	
-	@EJB
-	static BaseFacade bf2;
+    public LoginServlet() {
+        super();
+    }
 	
-	@EJB
 	public static String LoginBean (String u, String p){
 		System.out.println("Login Bean, u="+u+" p="+p);
 		return bf.checkLogin(u, p);
 	}
 	
-	@SuppressWarnings("static-access")
-	@EJB
 	public static String LoginBean2 (String u, String p){
 		System.out.println("Login Bean2:  u="+u+" p="+p);
-		return bf2.checkLogin2(u, p);
+		return BaseFacade.checkLogin2(u, p);
 	}
 
 	/**

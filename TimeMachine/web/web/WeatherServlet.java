@@ -25,6 +25,10 @@ public class WeatherServlet extends HttpServlet {
 	
 	@EJB
 	BaseFacade bf;
+	
+    public WeatherServlet() {
+        super();
+    }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)

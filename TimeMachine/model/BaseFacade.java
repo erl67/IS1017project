@@ -75,10 +75,8 @@ public class BaseFacade {
 			stmt.setString(2, pass);
 			ResultSet rs = stmt.executeQuery();
 			System.out.println(stmt.toString().substring(49));
-			//Query q1 = em.createQuery(stmt.toString().substring(49));
 
 			while (rs.next()) u = rs.getString(1);
-			System.out.println(u);
 
 			rs.close(); stmt.close();
 		} catch (SQLException e) {
