@@ -41,7 +41,6 @@ public class WeatherServlet extends HttpServlet {
 	 * Default constructor. 
 	 */
 	public WeatherServlet() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	@EJB
@@ -59,7 +58,6 @@ public class WeatherServlet extends HttpServlet {
 
 			try {
 				BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
-				//inputLine = in.readLine();
 				while ((inputLine = in.readLine()) != null) 
 					System.out.println(inputLine);
 				
@@ -76,13 +74,7 @@ public class WeatherServlet extends HttpServlet {
 		}
 	}
 
-	/**
-	 * @see Servlet#getServletConfig()
-	 */
-	public ServletConfig getServletConfig() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)

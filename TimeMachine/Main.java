@@ -9,10 +9,20 @@ import java.nio.charset.Charset;
 
 import javax.json.JsonObject;
 
-import model.BaseFacade;
+//import model.BaseEntity;
+//import model.BaseFacade;
+//import model.WxData;
+//import model.WxUser;
+
+//import LoginServlet;
+//import WeatherServlet.java;
 
 public class Main {
-
+	
+	static LoginServlet l;
+	WeatherServlet w;
+	
+	@SuppressWarnings("static-access")
 	public static void main(String[] args) {
 
 		String dsKey = "472f1ba38a5f3d13407fdb589d975c8c/";
@@ -22,21 +32,16 @@ public class Main {
 
 		String testURL = dsUrl + dsKey + dsLoc + dsTime;
 
-		//System.out.println("TEST");
 		WeatherServlet.URLConnectionReader(testURL);
 		
-		//BaseFacade.checkLogin("1", "1");
-//		BaseFacade.checkLogin2("1", "1");
+//		testLogin() ;
 		
-		String u = LoginServlet.LoginBean2("1", "1");
+		String u = l.LoginBean2("ERIC", "123");
 		System.out.println("User name returns: " + u);
 		
-//		String u2 = LoginServlet.LoginBean("1","1");
-//		System.out.println("EM returns: " + u2);
-		
-//		u = WeatherServlet.LoginBean("1","1");
-		
-		//WeatherServlet.URLConnectionReader("http://google.com");
+		u = LoginServlet.LoginBean("1","1");
+		System.out.println("EM returns: " + u);
+
 
 //		JsonObject json = readJsonFromUrl(testURL);
 //		System.out.println(json.toString());
@@ -93,5 +98,22 @@ public class Main {
 		}
 	}
 
+	public static void testLogin (){
+		
+		String u = null;
+		
+		u = l.LoginBean2("1", "1");
+		System.out.println("User name returns: " + u);
+		
+		u = l.LoginBean2("1", "0");
+		System.out.println("User name returns: " + u);
+		
+//		u = l.LoginBean("1","1");
+//		System.out.println("EM returns: " + u);
+		
+		u = l.LoginBean("1","1");
+		System.out.println("EM returns: " + u);
+		
+	}
 
 }
