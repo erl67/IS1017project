@@ -50,6 +50,7 @@ public class LoginServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
+		log(request.toString()); log(response.toString());
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		String u = LoginBean2(username, password);
@@ -72,10 +73,12 @@ public class LoginServlet extends HttpServlet {
 		      if (session.isNew()){
 		         title = "Welcome to my website";
 		         session.setAttribute(userIDKey, userID);
+		         log("NewSession//UIDKey:"+userIDKey+" UID:"+userID+" VisitCount:"+visitCount+" createTime:"+ createTime+ " lastAccess:"+lastAccessTime+" Session:"+session.toString());
 		      } else {
 		         visitCount = (Integer)session.getAttribute(visitCountKey);
 		         visitCount = visitCount + 1;
 		         userID = (String)session.getAttribute(userIDKey);
+		         log("OldSession//UIDKey:"+userIDKey+" UID:"+userID+" VisitCount:"+visitCount+" createTime:"+ createTime+ " lastAccess:"+lastAccessTime+" Session:"+session.toString());
 		      }
 		      session.setAttribute(visitCountKey,  visitCount);
 		      
