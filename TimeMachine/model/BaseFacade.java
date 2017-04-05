@@ -29,7 +29,7 @@ public class BaseFacade {
 
 	public static String checkLogin (String user, String pass){
 
-		String  q1 = "SELECT user_name FROM erl67is1017.wx_user WHERE ((user_name=" + user + ") AND (user_pass="+pass+"))";
+		String  q1 = "SELECT user_name FROM erl67is1017.wx_user WHERE ((user_name=" + user + ") AND (user_pass="+pass+"));";
 		System.out.println("EM create:: "+q1);
 
 		String u = null;

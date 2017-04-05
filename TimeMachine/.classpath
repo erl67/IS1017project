@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="WebContent/css/|WebContent/js/|WebContent/login/" kind="src" path=""/>
+	<classpathentry excluding="WebContent/css/|WebContent/js/|WebContent/login/|web/" kind="src" path=""/>
+	<classpathentry kind="src" path="web"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.datatools.connectivity.jdt.DRIVERLIBRARY/MySQL JDBC Driver"/>
