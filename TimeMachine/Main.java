@@ -1,6 +1,3 @@
-
-
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +8,8 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 import javax.json.JsonObject;
+
+import model.BaseFacade;
 
 public class Main {
 
@@ -23,13 +22,17 @@ public class Main {
 
 		String testURL = dsUrl + dsKey + dsLoc + dsTime;
 
-		System.out.println("TEST");
+		//System.out.println("TEST");
 		WeatherServlet.URLConnectionReader(testURL);
 		
 		//BaseFacade.checkLogin("1", "1");
+//		BaseFacade.checkLogin2("1", "1");
 		
-		String u;
-		u = LoginServlet.LoginBean("1","1");
+		String u = LoginServlet.LoginBean2("1", "1");
+		System.out.println("User name returns: " + u);
+		
+//		String u2 = LoginServlet.LoginBean("1","1");
+//		System.out.println("EM returns: " + u2);
 		
 //		u = WeatherServlet.LoginBean("1","1");
 		

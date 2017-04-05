@@ -19,7 +19,7 @@ public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	@EJB
-	static BaseFacade bf;
+	protected static BaseFacade bf;
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -32,6 +32,12 @@ public class LoginServlet extends HttpServlet {
 	@EJB
 	public static String LoginBean (String u, String p){
 		return bf.checkLogin(u, p);
+	}
+	
+	@EJB
+	public static String LoginBean2 (String u, String p){
+		System.out.println("Login Bean, u="+u+" p="+p);
+		return bf.checkLogin2(u, p);
 	}
 
 	/**
