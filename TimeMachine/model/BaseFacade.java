@@ -91,7 +91,7 @@ public class BaseFacade {
 			}
 		}
 
-		if (u==null) u="INVALID USER";
+		//if (u==null) u="INVALID USER";
 		return u;
 	}
 
