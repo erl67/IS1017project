@@ -8,6 +8,7 @@ import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -87,7 +88,18 @@ public class LoginServlet extends HttpServlet {
 				log("OldSession//UIDKey:"+userIDKey+" UID:"+userID+" VisitCount:"+visitCount+" createTime:"+ createTime+ " lastAccess:"+lastAccessTime+" Session:"+session.toString());
 			}
 			session.setAttribute(visitCountKey,  visitCount);
-
+			
+		    final String cookieName = "TimeMachine_cookie";
+		    final String cookieValue = u;  // you could assign it some encoded value
+		    final Boolean useSecureCookie = false;
+		    final int expiryTime = 60 * 60 * 1;  // 1h in seconds
+		    final String cookiePath = "/";
+		    Cookie tmc = new Cookie(cookieName, cookieValue);
+		    tmc.setSecure(useSecureCookie);  // determines whether the cookie should only be sent using a secure protocol, such as HTTPS or SSL
+		    tmc.setMaxAge(expiryTime);  // A negative value means that the cookie is not stored persistently and will be deleted when the Web browser exits. A zero value causes the cookie to be deleted.
+		    tmc.setPath(cookiePath);  // The cookie is visible to all the pages in the directory you specify, and all the pages in that directory's subdirectories
+		    response.addCookie(tmc);
+		    
 	        out.print("Login Success for user: " + u);  
 	        RequestDispatcher rd=request.getRequestDispatcher("index.html");  
 	        
