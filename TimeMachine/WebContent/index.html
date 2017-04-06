@@ -10,11 +10,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-chart.js/1.1.1/angular-chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.6.1/angular-sanitize.min.js"></script>
     <script src="js/app.js"></script>
   </head>
   <body ng-app="weatherTM">
     <nav class="navbar navbar-inverse navbar-fixed">
-      <div class="container">
+      <div class="container" ng-controller="NavbarController as nc">
         <div class="navbar-header pull-left">
           <a class="navbar-brand" href="./">Weather Time Machine</a>
         </div>
@@ -25,6 +27,9 @@
           <div ng-hide="user.loggedIn">
             <a class="btn btn-primary navbar-btn" id="btn-signin" href="login/">Sign In</a>
             <a class="btn btn-success navbar-btn" href="register/">Register</a>
+          </div>
+          <div ng-show="user.loggedIn">
+            <a class="btn navbar-btn navbar-link">{{ user.username }}</a>
           </div>
         </div>
       </div>
@@ -65,16 +70,25 @@
       <div ng-controller="DisplayController as dc">
         <h2>{{ location.longAddress }}</h2>
         <h4 class="text-primary">{{ location.date | date: 'longDate'}}</h4>
-        <div ng-controller="darkSky as ds">
-          <pre><code>{{ ds.data | json }}</code></pre>
+      </div>
+      <div ng-controller="HistoryController as hc" class="panel panel-primary">
+        <div class="panel-heading">
+          <h4>Historical Events</h4>
+        </div>
+        <div class="panel-body">
+          <ul>
+            <li ng-repeat="item in (hc.historyData.Events | orderBy: hc.random) | limitTo: 5 | orderBy: '-year'">
+              <p><strong>{{ item.year }}</strong>: <span ng-bind-html="item.html"></span></p>
+            </li>
+          </ul>
         </div>
       </div>
       <div ng-controller="ChartController">
         <canvas id="line" class="chart chart-line" chart-data="data" chart-labels="labels" chart-series="series" chart-options="options" chart-dataset-override="datasetOverride" chart-click="onClick">
         </canvas>
       </div>
-      <div ng-controller="HistoryController as histCtrl">
-        <pre><code>{{ histCtrl.historyData | json }}</code></pre>
+      <div ng-controller="darkSky as ds">
+        <pre><code>{{ ds.data | json }}</code></pre>
       </div>
       <a class="pull-right" href="https://darksky.net/poweredby/" target="_blank"><h5>Powered by Dark Sky</h5></a>
     </div>

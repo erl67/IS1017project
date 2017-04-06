@@ -1,6 +1,20 @@
 /* global angular: false */
 (function() {
-  var app = angular.module('weatherTM', ['chart.js']);
+  var app = angular.module('weatherTM', ['chart.js', 'ngCookies', 'ngSanitize']);
+
+  app.controller('NavbarController', ['$rootScope', '$cookies', function($rootScope, $cookies) {
+    var username = $cookies.get('TimeMachine_cookie');
+    if(username) {
+      $rootScope.user = {
+        loggedIn: true,
+        username: username
+      };
+    } else {
+      $rootScope.user = {
+        loggedIn: false
+      };
+    }
+  }]);
 
   app.controller('ErrorController', ['$rootScope', function($rootScope) {
     var error = this;
@@ -76,6 +90,9 @@
 
   app.controller('HistoryController', function($rootScope, $http) {
     var hc = this;
+    hc.random = function() {
+      return 0.5 - Math.random();
+    };
     $rootScope.getHistory = function(queryInfo) {
       var month = queryInfo.date.getMonth() + 1;
       var day = queryInfo.date.getDate();
