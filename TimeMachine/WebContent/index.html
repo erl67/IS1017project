@@ -34,26 +34,26 @@
         </div>
       </div>
     </nav>
-    <div class="lg-image container" ng-controller="LocationController as lc">
+    <div class="lg-image container" ng-controller="InputController as ic">
       <div class="row">
         <div class="col-sm-6" id="tagline">
           <h1 class="text-center">Explore weather in the past</h1>
         </div>
         <div class="col-sm-6">
-          <form ng-submit="lc.submit()">
+          <form ng-submit="ic.submit()">
             <fieldset class="row">
               <div class="form-group col-sm-6">
                 <label for="location">Enter a location</label>
                 <div class="input-group">
                   <span class="input-group-addon">
-                    <a ng-click="lc.geolocate()"><span class="glyphicon glyphicon-map-marker"></span></a>
+                    <a ng-click="ic.geolocate()"><span class="glyphicon glyphicon-map-marker"></span></a>
                   </span>
-                  <input type="text" name="location" class="form-control" ng-model="lc.location" placeholder="address, city, zipcode, etc." ng-keypress="($event.charCode==13)? lc.submit() : return">
+                  <input type="text" name="location" class="form-control" ng-model="ic.location" placeholder="address, city, zipcode, etc." ng-keypress="($event.charCode==13)? ic.submit() : return">
                 </div>
               </div>
               <div class="form-group col-sm-6">
                 <label for="date">Enter a starting date</label>
-                <input class="form-control" name="date" type="date" ng-model="lc.queryInfo.date" value="{{ lc.queryInfo.date | date: 'yyyy-MM-dd'}}" placeholder="yyyy-mm-dd" ng-keypress="($event.charCode==13)? lc.submit() : return">
+                <input class="form-control" name="date" type="date" ng-model="ic.queryInfo.date" value="{{ ic.queryInfo.date | date: 'yyyy-MM-dd'}}" placeholder="yyyy-mm-dd" ng-keypress="($event.charCode==13)? ic.submit() : return">
               </div>
             </fieldset>
           </form>
@@ -77,7 +77,7 @@
         </div>
         <div class="panel-body">
           <ul>
-            <li ng-repeat="item in (hc.historyData.Events | orderBy: hc.random) | limitTo: 5 | orderBy: '-year'">
+            <li ng-repeat="item in hc.historyData.Events | limitTo: 5">
               <p><strong>{{ item.year }}</strong>: <span ng-bind-html="item.html"></span></p>
             </li>
           </ul>

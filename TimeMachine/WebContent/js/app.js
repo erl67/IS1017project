@@ -29,37 +29,41 @@
     };
   }]);
 
-  app.controller('LocationController', ['$http', '$rootScope', function($http, $rootScope) {
-    var lc = this;
-    lc.queryInfo = {
+  app.controller('InputController', ['$http', '$rootScope', function($http, $rootScope) {
+    var ic = this;
+    ic.queryInfo = {
       date: new Date()
     };
-    lc.submit = function() {
-      lc.queryInfo.date = new Date(lc.queryInfo.date);
-      $http.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${lc.location.replace(' ', '+')}`)
+    ic.submit = function() {
+      ic.queryInfo.date = new Date(ic.queryInfo.date);
+      $rootScope.getHistory(ic.queryInfo.date);
+      if(!ic.location) {
+        return;
+      }
+      $http.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${ic.location.replace(' ', '+')}`)
         .then(function success(response) {
           if(response.data.status === 'ZERO_RESULTS') {
             $rootScope.displayError('No results found. Please try again.');
           } else if(response.data.status !== 'OK') {
             $rootScope.displayError('An error occurred getting location data. Please try again');
           } else {
-            lc.data = response.data.results[0];
-            lc.queryInfo.latitude = lc.data.geometry.location.lat;
-            lc.queryInfo.longitude = lc.data.geometry.location.lng;
+            ic.mapsData = response.data.results[0];
+            ic.queryInfo.latitude = ic.mapsData.geometry.location.lat;
+            ic.queryInfo.longitude = ic.mapsData.geometry.location.lng;
+            ic.queryInfo.title = ic.mapsData.formatted_address;
             $rootScope.location = {
-              longAddress: lc.data.formatted_address,
-              date: lc.queryInfo.date
+              longAddress: ic.mapsData.formatted_address,
+              date: ic.queryInfo.date
             };
-            $rootScope.getData(lc.queryInfo);
-            $rootScope.getHistory(lc.queryInfo);
+            $rootScope.getDarkSkyData(ic.queryInfo);
           }
         });
     };
-    lc.geolocate = function() {
+    ic.geolocate = function() {
       if('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition((position) => {
-          lc.location = `${position.coords.latitude}, ${position.coords.longitude}`;
-          lc.submit();
+          ic.location = `${position.coords.latitude}, ${position.coords.longitude}`;
+          ic.submit();
         });
       } else {
         $rootScope.displayError('Geolocation is not supported by your browser. Please type in a location.');
@@ -69,10 +73,18 @@
 
   app.controller('darkSky', ['$http', '$rootScope', function($http, $rootScope) {
     var ds = this;
-    $rootScope.getData = function(queryInfo) {
-      if(!queryInfo.date || !queryInfo.longitude) {
-        return;
+    $rootScope.getDarkSkyData = function(queryInfo) {
+      if($rootScope.user.loggedIn) {
+        queryInfo.username = $rootScope.user.username;
+        console.log(queryInfo);
+        $http.post('/TimeMachine/WeatherServlet/', queryInfo)
+          .then(function success(response) {
+            console.log(response);
+          }, function error(response) {
+            console.log(response);
+          });
       }
+
       var url = `https://crossorigin.me/https://api.darksky.net/forecast/472f1ba38a5f3d13407fdb589d975c8c/${queryInfo.latitude},${queryInfo.longitude},${queryInfo.date.toJSON().split('.')[0]}?exclude=minutely,hourly,flags`;
       $http.get(url)
         .then(function success(response) {
@@ -93,16 +105,18 @@
     hc.random = function() {
       return 0.5 - Math.random();
     };
-    $rootScope.getHistory = function(queryInfo) {
-      var month = queryInfo.date.getMonth() + 1;
-      var day = queryInfo.date.getDate();
+    $rootScope.getHistory = function(date) {
+      if(!date) {
+        return;
+      }
+      var month = date.getMonth() + 1;
+      var day = date.getDate();
       var url = `https://crossorigin.me/http://history.muffinlabs.com/date/${month}/${day}`;
       $http.get(url)
         .then(function success(response) {
           hc.historyData = response.data.data;
-          console.log(hc.historyData);
         }, function failure() {
-          $rootScope.displayError('Cannot fetch historyData');
+          $rootScope.displayError('Cannot fetch historical events');
         });
     };
   });
