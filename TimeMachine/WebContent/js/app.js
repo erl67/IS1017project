@@ -1,6 +1,6 @@
 /* global angular: false */
 (function() {
-  var app = angular.module('weatherTM', []);
+  var app = angular.module('weatherTM', ['chart.js']);
 
   app.controller('ErrorController', ['$rootScope', function($rootScope) {
     var error = this;
@@ -37,6 +37,7 @@
               date: lc.queryInfo.date
             };
             $rootScope.getData(lc.queryInfo);
+            $rootScope.getHistory(lc.queryInfo);
           }
         });
     };
@@ -71,6 +72,34 @@
   app.controller('DisplayController', function() {
     var dc = this;
     dc.dataPoints = [];
+  });
+
+  app.controller('HistoryController', function($rootScope, $http) {
+    var hc = this;
+    $rootScope.getHistory = function(queryInfo) {
+      var month = queryInfo.date.getMonth() + 1;
+      var day = queryInfo.date.getDate();
+      var url = `https://crossorigin.me/http://history.muffinlabs.com/date/${month}/${day}`;
+      $http.get(url)
+        .then(function success(response) {
+          hc.historyData = response.data.data;
+          console.log(hc.historyData);
+        }, function failure() {
+          $rootScope.displayError('Cannot fetch historyData');
+        });
+    };
+  });
+
+  app.controller('ChartController', function($scope) {
+    $scope.labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+    $scope.series = ['Series A', 'Series B'];
+    $scope.data = [
+       [65, 59, 80, 81, 56, 55, 40],
+       [28, 48, 40, 19, 86, 27, 90]
+    ];
+    $scope.onClick = function (points, evt) {
+      console.log(points, evt);
+    };
   });
 
 })();
