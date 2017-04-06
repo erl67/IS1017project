@@ -74,16 +74,15 @@
   app.controller('darkSky', ['$http', '$rootScope', function($http, $rootScope) {
     var ds = this;
     $rootScope.getDarkSkyData = function(queryInfo) {
-      if($rootScope.user.loggedIn) {
-        queryInfo.username = $rootScope.user.username;
-        console.log(queryInfo);
-        $http.post('/TimeMachine/WeatherServlet/', queryInfo)
-          .then(function success(response) {
-            console.log(response);
-          }, function error(response) {
-            console.log(response);
-          });
-      }
+      //if($rootScope.user.loggedIn) {
+      queryInfo.username = $rootScope.user.username || null;
+      $http.post('/TimeMachine/WeatherServlet/', queryInfo)
+        .then(function success(response) {
+          console.log(response);
+        }, function error(response) {
+          console.log(response);
+        });
+      //}
 
       var url = `https://crossorigin.me/https://api.darksky.net/forecast/472f1ba38a5f3d13407fdb589d975c8c/${queryInfo.latitude},${queryInfo.longitude},${queryInfo.date.toJSON().split('.')[0]}?exclude=minutely,hourly,flags`;
       $http.get(url)
