@@ -76,7 +76,7 @@
     $rootScope.getDarkSkyData = function(queryInfo) {
       //if($rootScope.user.loggedIn) {
       queryInfo.username = $rootScope.user.username || null;
-      $http.post('/TimeMachine/WeatherServlet/', queryInfo)
+      $http.post('/TimeMachine/HistoryServlet/', queryInfo)
         .then(function success(response) {
           console.log(response);
         }, function error(response) {
