@@ -6,6 +6,9 @@
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 		<jta-data-source>jdbc/infsci1017</jta-data-source>
 		<class>model.BaseEntity</class>
+		<class>model.WxData</class>
+		<class>model.WxHist</class>
+		<class>model.WxUser</class>
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
 			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://sis-teach-01.sis.pitt.edu:3306/" />

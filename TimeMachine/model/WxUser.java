@@ -2,6 +2,7 @@ package model;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import java.util.List;
 
 
 /**
@@ -22,6 +23,14 @@ public class WxUser implements Serializable {
 
 	@Column(name="user_pass")
 	private String userPass;
+
+	//bi-directional many-to-one association to WxData
+	@OneToMany(mappedBy="wxUser")
+	private List<WxData> wxData;
+
+	//bi-directional many-to-one association to WxHist
+	@OneToMany(mappedBy="wxUser")
+	private List<WxHist> wxHists;
 
 	public WxUser() {
 	}
@@ -48,6 +57,50 @@ public class WxUser implements Serializable {
 
 	public void setUserPass(String userPass) {
 		this.userPass = userPass;
+	}
+
+	public List<WxData> getWxData() {
+		return this.wxData;
+	}
+
+	public void setWxData(List<WxData> wxData) {
+		this.wxData = wxData;
+	}
+
+	public WxData addWxData(WxData wxData) {
+		getWxData().add(wxData);
+		wxData.setWxUser(this);
+
+		return wxData;
+	}
+
+	public WxData removeWxData(WxData wxData) {
+		getWxData().remove(wxData);
+		wxData.setWxUser(null);
+
+		return wxData;
+	}
+
+	public List<WxHist> getWxHists() {
+		return this.wxHists;
+	}
+
+	public void setWxHists(List<WxHist> wxHists) {
+		this.wxHists = wxHists;
+	}
+
+	public WxHist addWxHist(WxHist wxHist) {
+		getWxHists().add(wxHist);
+		wxHist.setWxUser(this);
+
+		return wxHist;
+	}
+
+	public WxHist removeWxHist(WxHist wxHist) {
+		getWxHists().remove(wxHist);
+		wxHist.setWxUser(null);
+
+		return wxHist;
 	}
 
 }

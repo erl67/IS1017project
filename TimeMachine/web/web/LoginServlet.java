@@ -30,10 +30,11 @@ public class LoginServlet extends HttpServlet {
 		super();
 	}
 
-	//	public static String LoginBean (String u, String p){
-	//		System.out.println("Login Bean, u="+u+" p="+p);
-	//		return bf.checkLogin(u, p);
-	//	}
+	public String LoginBean (String u, String p){
+		System.out.println("Login Bean, u="+u+" p="+p);
+		return bf.checkLogin(u, p);
+//		return bf.checkLogin(u, p);
+	}
 
 	public static String LoginBean2 (String u, String p){
 		System.out.println("Login Bean2:  u="+u+" p="+p);
@@ -60,6 +61,9 @@ public class LoginServlet extends HttpServlet {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		String u = LoginBean2(username, password);
+//		String u = LoginBean(username, password);
+		log(u);
+
 
 		final String cookieName = "TimeMachine_cookie";
 		final String cookieValue = u;  // you could assign it some encoded value
@@ -78,7 +82,7 @@ public class LoginServlet extends HttpServlet {
 			// Get last access time of this web page.
 			Date lastAccessTime = new Date(session.getLastAccessedTime());
 
-			String title = "Welcome Back to my website";
+			String title = "Welcome Back to my Weather Time Machine//IS1017project";
 			Integer visitCount = new Integer(0);
 			String visitCountKey = new String("visitCount");
 			String userIDKey = new String(u);
@@ -113,43 +117,6 @@ public class LoginServlet extends HttpServlet {
 			response.sendRedirect("/TimeMachine/");
 
 			rd.include(request,response);  
-
-			// Set response content type
-			//		      response.setContentType("text/html");
-			//		      PrintWriter out = response.getWriter();
-
-			//		      String docType =
-			//		      "<!doctype html public \"-//w3c//dtd html 4.0 " +
-			//		      "transitional//en\">\n";
-			//		      out.println(docType +
-			//		                "<html>\n" +
-			//		                "<head><title>" + title + "</title></head>\n" +
-			//		                "<body bgcolor=\"#f0f0f0\">\n" +
-			//		                "<h1 align=\"center\">" + title + "</h1>\n" +
-			//		                 "<h2 align=\"center\">Session Infomation</h2>\n" +
-			//		                "<table border=\"1\" align=\"center\">\n" +
-			//		                "<tr bgcolor=\"#949494\">\n" +
-			//		                "  <th>Session info</th><th>value</th></tr>\n" +
-			//		                "<tr>\n" +
-			//		                "  <td>id</td>\n" +
-			//		                "  <td>" + session.getId() + "</td></tr>\n" +
-			//		                "<tr>\n" +
-			//		                "  <td>Creation Time</td>\n" +
-			//		                "  <td>" + createTime + 
-			//		                "  </td></tr>\n" +
-			//		                "<tr>\n" +
-			//		                "  <td>Time of Last Access</td>\n" +
-			//		                "  <td>" + lastAccessTime + 
-			//		                "  </td></tr>\n" +
-			//		                "<tr>\n" +
-			//		                "  <td>User ID</td>\n" +
-			//		                "  <td>" + userID + 
-			//		                "  </td></tr>\n" +
-			//		                "<tr>\n" +
-			//		                "  <td>Number of visits</td>\n" +
-			//		                "  <td>" + visitCount + "</td></tr>\n" +
-			//		                "</table>\n" +
-			//		                "</body></html>");
 
 		} else {
 

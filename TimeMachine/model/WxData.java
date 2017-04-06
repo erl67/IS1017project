@@ -29,9 +29,6 @@ public class WxData implements Serializable {
 
 	private double dewPoint;
 
-	@Column(name="fk_user_id")
-	private int fkUserId;
-
 	private double humidity;
 
 	private String icon;
@@ -79,6 +76,11 @@ public class WxData implements Serializable {
 	private int windBearing;
 
 	private double windSpeed;
+
+	//bi-directional many-to-one association to WxUser
+	@ManyToOne
+	@JoinColumn(name="fk_user_id")
+	private WxUser wxUser;
 
 	public WxData() {
 	}
@@ -137,14 +139,6 @@ public class WxData implements Serializable {
 
 	public void setDewPoint(double dewPoint) {
 		this.dewPoint = dewPoint;
-	}
-
-	public int getFkUserId() {
-		return this.fkUserId;
-	}
-
-	public void setFkUserId(int fkUserId) {
-		this.fkUserId = fkUserId;
 	}
 
 	public double getHumidity() {
@@ -337,6 +331,14 @@ public class WxData implements Serializable {
 
 	public void setWindSpeed(double windSpeed) {
 		this.windSpeed = windSpeed;
+	}
+
+	public WxUser getWxUser() {
+		return this.wxUser;
+	}
+
+	public void setWxUser(WxUser wxUser) {
+		this.wxUser = wxUser;
 	}
 
 }

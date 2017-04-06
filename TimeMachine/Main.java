@@ -34,7 +34,7 @@ public class Main {
 		String u = l.LoginBean2("ERIC", "123");
 		System.out.println("User name returns: " + u);
 		
-		u = LoginServlet.LoginBean("1","1");
+//		u = LoginServlet.LoginBean("1","1");
 		System.out.println("EM returns: " + u);
 
 
