@@ -53,11 +53,19 @@ public class LoginServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		doGet(request, response);
 		log(request.toString()); log(response.toString());
+		
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		String u = LoginBean2(username, password);
+		
+	    final String cookieName = "TimeMachine_cookie";
+	    final String cookieValue = u;  // you could assign it some encoded value
+	    final Boolean useSecureCookie = false;
+	    final int expiryTime = 60 * 60 * 1;  // 1h in seconds
+	    final String cookiePath = "/";
 		
 	    response.setContentType("text/html");  
 	    PrintWriter out = response.getWriter();  
@@ -89,11 +97,7 @@ public class LoginServlet extends HttpServlet {
 			}
 			session.setAttribute(visitCountKey,  visitCount);
 			
-		    final String cookieName = "TimeMachine_cookie";
-		    final String cookieValue = u;  // you could assign it some encoded value
-		    final Boolean useSecureCookie = false;
-		    final int expiryTime = 60 * 60 * 1;  // 1h in seconds
-		    final String cookiePath = "/";
+
 		    Cookie tmc = new Cookie(cookieName, cookieValue);
 		    tmc.setSecure(useSecureCookie);  // determines whether the cookie should only be sent using a secure protocol, such as HTTPS or SSL
 		    tmc.setMaxAge(expiryTime);  // A negative value means that the cookie is not stored persistently and will be deleted when the Web browser exits. A zero value causes the cookie to be deleted.
@@ -148,6 +152,13 @@ public class LoginServlet extends HttpServlet {
 			//		                "</body></html>");
 
 		} else {
+			
+		    Cookie tmc = new Cookie(cookieName, "Failed Login");
+		    tmc.setSecure(useSecureCookie);
+		    tmc.setMaxAge(expiryTime);	//set to 0 to delete cookie
+		    tmc.setPath(cookiePath);
+		    response.addCookie(tmc);
+			
 	        out.print("Sorry username or password error");  
 	        RequestDispatcher rd=request.getRequestDispatcher("index.html");  
 	        
