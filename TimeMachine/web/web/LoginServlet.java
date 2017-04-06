@@ -1,9 +1,11 @@
 package web;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Date;
 
 import javax.ejb.EJB;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -55,6 +57,9 @@ public class LoginServlet extends HttpServlet {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		String u = LoginBean2(username, password);
+		
+	    response.setContentType("text/html");  
+	    PrintWriter out = response.getWriter();  
 
 		if (u != null) {
 			// Create a session object if it is already not  created.
@@ -83,10 +88,15 @@ public class LoginServlet extends HttpServlet {
 			}
 			session.setAttribute(visitCountKey,  visitCount);
 
+	        out.print("Login Success for user: " + u);  
+	        RequestDispatcher rd=request.getRequestDispatcher("index.html");  
+	        
 			response.getWriter().print("success");
 			response.addHeader("LOGIN_STATUS", "SUCCESS");
 			request.setAttribute("user", u);
 			response.sendRedirect("/TimeMachine/");
+			
+	        rd.include(request,response);  
 
 			// Set response content type
 			//		      response.setContentType("text/html");
@@ -126,10 +136,15 @@ public class LoginServlet extends HttpServlet {
 			//		                "</body></html>");
 
 		} else {
+	        out.print("Sorry username or password error");  
+	        RequestDispatcher rd=request.getRequestDispatcher("index.html");  
+	        
 			response.getWriter().print("fail");
 			response.addHeader("LOGIN_STATUS", "FAILURE");
 			request.setAttribute("user", "");
 			response.sendRedirect("/TimeMachine/login/");
+			
+			rd.include(request,response);  
 		}
 
 	}
