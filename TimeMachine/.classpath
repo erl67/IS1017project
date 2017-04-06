@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="WebContent/css/|WebContent/js/|WebContent/login/|web/" kind="src" path=""/>
+	<classpathentry excluding="WebContent/css/|WebContent/js/|WebContent/login/|web/|WebContent/" kind="src" path=""/>
 	<classpathentry kind="src" path="web"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.datatools.connectivity.jdt.DRIVERLIBRARY/MySQL JDBC Driver"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="C:/dev/java_ee_sdk-7u2/glassfish4/glassfish/lib/gf-client.jar"/>
-	<classpathentry kind="lib" path="C:/dev/java_ee_sdk-7u2/glassfish4/glassfish/lib/appserv-rt.jar"/>
-	<classpathentry kind="lib" path="C:/dev/java_ee_sdk-7u2/glassfish4/glassfish/lib/asadmin/server-mgmt.jar"/>
+	<classpathentry kind="lib" path="/Users/njscholfield/glassfish4/glassfish/lib/gf-client.jar"/>
+	<classpathentry kind="lib" path="/Users/njscholfield/glassfish4/glassfish/lib/appserv-rt.jar"/>
+	<classpathentry kind="lib" path="/Users/njscholfield/glassfish4/glassfish/lib/asadmin/server-mgmt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
