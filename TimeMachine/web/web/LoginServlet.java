@@ -82,6 +82,7 @@ public class LoginServlet extends HttpServlet {
 		      }
 		      session.setAttribute(visitCountKey,  visitCount);
 		      
+		      request.setAttribute("user", u);
 		      response.sendRedirect("/TimeMachine/");
 
 		      // Set response content type
