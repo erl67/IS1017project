@@ -17,7 +17,6 @@ import javax.persistence.Query;
 public class BaseFacade {
 
 	@PersistenceContext(unitName = "TimeMachine")
-	static
 	EntityManager em;
 	//protected EntityManager em = EntityManagerFactory.createEntityManager();
 	
@@ -27,15 +26,20 @@ public class BaseFacade {
 		super();
 	}
 
-	public static String checkLogin (String user, String pass){
+	public String checkLogin (String user, String pass){
 
-		String  q1 = "SELECT user_name FROM erl67is1017.wx_user WHERE ((user_name=" + user + ") AND (user_pass="+pass+"));";
-		System.out.println("EM create:: "+q1);
+		String  q1 = "SELECT user_name FROM erl67is1017.wx_user u WHERE ((user_name='" + user + "') AND (user_pass='"+pass+"'))";
+		System.out.println("EM create:: "+q1);		
 
 		String u = null;
 
 		try {
-			q = em.createQuery(q1);
+//			q = em.createQuery(q1);
+//			Query q = em.createQuery("SELECT u.user_name FROM erl67is1017.wx_user u WHERE ((u.user_name=:name) AND (u.user_pass=:pass))");
+			Query q = em.createQuery("SELECT user_name FROM erl67is1017.wx_user u WHERE ((u.user_name= :name) AND (u.user_pass= :pass))");
+			q.setParameter("name", user);
+			q.setParameter("pass", pass);
+			System.out.println(q.toString());
 		}
 		catch (NullPointerException e) {
 			e.printStackTrace();
