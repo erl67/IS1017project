@@ -34,8 +34,6 @@ public class BaseFacade {
 		String u = null;
 
 		try {
-//			q = em.createQuery(q1);
-//			Query q = em.createQuery("SELECT u.user_name FROM erl67is1017.wx_user u WHERE ((u.user_name=:name) AND (u.user_pass=:pass))");
 			Query q = em.createQuery("SELECT user_name FROM erl67is1017.wx_user u WHERE ((u.user_name= :name) AND (u.user_pass= :pass))");
 			q.setParameter("name", user);
 			q.setParameter("pass", pass);
@@ -57,7 +55,7 @@ public class BaseFacade {
 		}
 	}
 
-	public static String checkLogin2 (String user, String pass) {
+	public String checkLogin2 (String user, String pass) {
 
 		Connection con = null;
 		final String DB_URL = "jdbc:mysql://sis-teach-01.sis.pitt.edu:3306/erl67is1017";

@@ -33,12 +33,11 @@ public class LoginServlet extends HttpServlet {
 	public String LoginBean (String u, String p){
 		System.out.println("Login Bean, u="+u+" p="+p);
 		return bf.checkLogin(u, p);
-//		return bf.checkLogin(u, p);
 	}
 
-	public static String LoginBean2 (String u, String p){
+	public String LoginBean2 (String u, String p){
 		System.out.println("Login Bean2:  u="+u+" p="+p);
-		return BaseFacade.checkLogin2(u, p);
+		return bf.checkLogin2(u, p);
 	}
 
 	/**
@@ -47,7 +46,8 @@ public class LoginServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.getWriter().println("\n\n\nLoginServletTest\n\n\n");
 		response.getWriter().append("Served at: ").append(request.getContextPath());
-		response.addHeader("LOGIN_STATUS", "no");
+		response.addHeader("SERVLET_STATUS", "something");
+		response.setStatus(200);
 	}
 
 	/**

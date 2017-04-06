@@ -10,7 +10,9 @@ import java.net.URLConnection;
 import java.util.Date;
 
 import javax.ejb.EJB;
+import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,25 +25,31 @@ import javax.servlet.http.HttpSession;
 import model.BaseFacade;
 
 /**
- * Servlet implementation class WeatherServlet
+ * Servlet implementation class HistoryServlet
  */
-@WebServlet({ "/WeatherServlet", "/w" })
-public class WeatherServlet extends HttpServlet {
+@WebServlet({ "/HistoryServlet", "/h" })
+public class HistoryServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
+
 	@EJB
 	BaseFacade bf;
-	
-    public WeatherServlet() {
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public HistoryServlet() {
         super();
+        // TODO Auto-generated constructor stub
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		response.getWriter().println("\n\n\nHistoryServletTest\n\n\n");
 		response.getWriter().append("Served at: ").append(request.getContextPath());
+		response.addHeader("SERVLET_STATUS", "something");
+		response.setStatus(200);
 	}
 
 	/**
@@ -52,26 +60,33 @@ public class WeatherServlet extends HttpServlet {
 		doGet(request, response);
 		log(request.toString()); log(response.toString());
 
-		JsonObject jo;
-		jo.pu
-		try {
-			JsonParser parser;
-			JsonObject parse = parser.parse(request.getReader());
-		} catch (Exception e) {
-	
-		}
 		
-		JsonObject returnValue;
-		JsonValue jv = "success";
-		returnValue.put("user", new JsonValue("sucess"));
-		returnValue.put("user", "success");
-		response.getWriter().print(returnValue);
+//		JsonObject object = Json.createObjectBuilder().build();
+//		JsonObject jo = new JsonObject();
+//		JsonObject jo;
+//		JsonValue jv;
+//		jv = "test";
+//		
+//		object.put("user", "test");
+//		
+//		try {
+//			JsonParser parser;
+//			JsonObject parse = parser.parse(request.getReader());
+//		} catch (Exception e) {
+//	
+//		}
+//		
+//		JsonObject returnValue;
+//		JsonValue jv = "success";
+//		returnValue.put("user", new JsonValue("sucess"));
+//		returnValue.put("user", "success");
+//		response.getWriter().print(returnValue);
 		
-		String u = "WeatherServlet for now";
+		String u = "HistoryServlet for now";
 
 		final String cookieName = "TimeMachine_history";
 		final String cookieValue = "This Does Nothing";  // you could assign it some encoded value
-		final Boolean useSecureCookie = true;
+		final Boolean useSecureCookie = false;
 		final int expiryTime = 60 * 60 * 24;  // 24h in seconds
 		final String cookiePath = "/";
 
@@ -107,7 +122,7 @@ public class WeatherServlet extends HttpServlet {
 		
 		} else {
 
-			Cookie tmc = new Cookie(cookieName, "Weather Servlet No Login");
+			Cookie tmc = new Cookie(cookieName, "History Servlet No Login");
 			tmc.setSecure(useSecureCookie);
 			tmc.setMaxAge(expiryTime);	//set to 0 to delete cookie
 			tmc.setPath(cookiePath);
@@ -117,8 +132,8 @@ public class WeatherServlet extends HttpServlet {
 			RequestDispatcher rd=request.getRequestDispatcher("index.html");  
 
 			response.getWriter().print("fail");
-			response.addHeader("LOGIN_STATUS", "FAILURE");
-			request.setAttribute("user", "");
+			response.addHeader("HISTORY_SERVLET", "OK");
+//			request.setAttribute("user", "");
 
 			rd.include(request,response);  
 		}
@@ -126,30 +141,7 @@ public class WeatherServlet extends HttpServlet {
 	}
 	
 
-	public static void URLConnectionReader(String urlS) {
-		URL url;
-		URLConnection yc;
-		String inputLine;
-		try {
-			url = new URL(urlS);
-			yc = url.openConnection();
 
-			try {
-				BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
-				while ((inputLine = in.readLine()) != null) 
-					System.out.println(inputLine);
-				
-				in.close();
-			}
-			catch (Exception e){
-				e.printStackTrace();
-			}
-
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+	
 
 }
