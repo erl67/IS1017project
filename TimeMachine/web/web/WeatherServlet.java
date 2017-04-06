@@ -10,6 +10,7 @@ import java.net.URLConnection;
 import java.util.Date;
 
 import javax.ejb.EJB;
+import javax.json.JsonObject;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -51,19 +52,20 @@ public class WeatherServlet extends HttpServlet {
 		doGet(request, response);
 		log(request.toString()); log(response.toString());
 
-//		JsonObject jo = new JsonObject();
-//		try {
-//			JsonParser parser;
-//			JsonObject parse = parser.parse(request.getReader());
-//		} catch (Exception e) {
-//	
-//		}
-//		
-//		JsonObject returnValue;
-//		JsonValue jv = "success";
-//		returnValue.put("user", new JsonValue("sucess"));
-//		returnValue.put("user", "success");
-//		response.getWriter().print(returnValue);
+		JsonObject jo;
+		jo.pu
+		try {
+			JsonParser parser;
+			JsonObject parse = parser.parse(request.getReader());
+		} catch (Exception e) {
+	
+		}
+		
+		JsonObject returnValue;
+		JsonValue jv = "success";
+		returnValue.put("user", new JsonValue("sucess"));
+		returnValue.put("user", "success");
+		response.getWriter().print(returnValue);
 		
 		String u = "WeatherServlet for now";
 

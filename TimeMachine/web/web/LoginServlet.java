@@ -115,6 +115,7 @@ public class LoginServlet extends HttpServlet {
 			response.addHeader("LOGIN_STATUS", "SUCCESS");
 			request.setAttribute("user", u);
 			response.sendRedirect("/TimeMachine/");
+			request.setAttribute("session", session);
 
 			rd.include(request,response);  
 
