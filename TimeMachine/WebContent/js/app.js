@@ -3,18 +3,37 @@
   var app = angular.module('weatherTM', ['chart.js', 'ngCookies', 'ngSanitize']);
 
   app.controller('NavbarController', ['$rootScope', '$cookies', function($rootScope, $cookies) {
-    var username = $cookies.get('TimeMachine_cookie');
-    if(username) {
-      $rootScope.user = {
-        loggedIn: true,
-        username: username
-      };
-    } else {
-      $rootScope.user = {
-        loggedIn: false
-      };
-    }
+    var nc = this;
+    nc.checkLogin = function() {
+      var username = $cookies.get('TimeMachine_cookie');
+      if(username) {
+        $rootScope.user = {
+          loggedIn: true,
+          username: username
+        };
+      } else {
+        $rootScope.user = {
+          loggedIn: false
+        };
+      }
+    };
+    nc.checkLogin();
+    nc.logout = function() {
+      $cookies.remove('TimeMachine_cookie');
+      nc.checkLogin();
+    };
   }]);
+
+  app.controller('PanelController', function($scope) {
+    $scope.panel = 1;
+    this.showRawDSData = false;
+    this.currentPanel = function(input) {
+      return $scope.panel === input;
+    };
+    $scope.setPanel = function(input) {
+      $scope.panel = input;
+    };
+  });
 
   app.controller('ErrorController', ['$rootScope', function($rootScope) {
     var error = this;

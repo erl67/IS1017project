@@ -1,0 +1,14 @@
+<section id="historyPanel">
+  <div class="panel panel-primary" ng-if="hc.historyData.Events">
+    <div class="panel-heading">
+      <h4>Historical Events</h4>
+    </div>
+    <div class="panel-body">
+      <ul>
+        <li ng-repeat="item in hc.historyData.Events | limitTo: 5">
+          <p><strong>{{ item.year }}</strong>: <span ng-bind-html="item.html"></span></p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
