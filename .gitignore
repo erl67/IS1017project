@@ -15,3 +15,5 @@ login.properties
 .classpath
 
 TimeMachine/.classpath
+.project
+.settings
