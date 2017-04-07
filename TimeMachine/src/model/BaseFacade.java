@@ -27,32 +27,26 @@ public class BaseFacade {
 	}
 
 	public String checkLogin (String user, String pass){
-
-		String  q1 = "SELECT user_name FROM erl67is1017.wx_user u WHERE ((user_name='" + user + "') AND (user_pass='"+pass+"'))";
-		System.out.println("EM create:: "+q1);		
-
 		String u = null;
 
 		try {
-			Query q = em.createQuery("SELECT user_name FROM erl67is1017.wx_user u WHERE ((u.user_name= :name) AND (u.user_pass= :pass))");
+			Query q = em.createQuery("SELECT u FROM WxUser u WHERE ((u.userName= :name) AND (u.userPass= :pass))");
 			q.setParameter("name", user);
 			q.setParameter("pass", pass);
 			System.out.println(q.toString());
+			WxUser userEnt = (WxUser) q.getSingleResult();
+			u = userEnt.getUserName();
+			System.out.println(q.toString());
+			return u;
 		}
 		catch (NullPointerException e) {
 			e.printStackTrace();
-		}
-
-		try {
-			//String u = ((BaseEntity)<> q.getSingleResult())
-			//String u = (BaseEntity)q.getSingleResult().toString();
-			u = (String) q.getSingleResult();
-			System.out.println(q1.toString() + " == " + u);
-			return u;
-		}
-		catch (NoResultException e) {
+			return null;
+		} catch (Exception f) {
+			f.printStackTrace();
 			return null;
 		}
+
 	}
 
 	public String checkLogin2 (String user, String pass) {

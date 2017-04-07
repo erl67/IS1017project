@@ -47,7 +47,7 @@ public class LoginServlet extends HttpServlet {
 		response.getWriter().println("\n\n\nLoginServletTest\n\n\n");
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 		response.addHeader("SERVLET_STATUS", "something");
-		response.setStatus(200);
+		response.setStatus(100);
 	}
 
 	/**
@@ -60,8 +60,8 @@ public class LoginServlet extends HttpServlet {
 
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
-		String u = LoginBean2(username, password);
-//		String u = LoginBean(username, password);
+//		String u = LoginBean2(username, password);	//uses old SQL connection
+		String u = LoginBean(username, password);	//uses EntityManager connection
 		log(u);
 
 
