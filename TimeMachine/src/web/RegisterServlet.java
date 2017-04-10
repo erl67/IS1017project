@@ -87,12 +87,12 @@ public class RegisterServlet extends HttpServlet {
 			response.setStatus(200);
 
 			rd.include(request,response);
-			uf.checkLogin(username, password);
+//			uf.checkLogin(username, password);
 
 		} else {
 
 			Cookie tmc = new Cookie("TimeMachine_cookie", "Failed Registration");
-			Cookie uid = new Cookie("TImeMachine_uid", "-1");
+			Cookie uid = new Cookie("TImeMachine_uid", "0");
 			tmc.setSecure(useSecureCookie);
 			tmc.setMaxAge(expiryTime);
 			tmc.setPath(cookiePath);

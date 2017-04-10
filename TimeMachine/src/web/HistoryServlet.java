@@ -1,18 +1,10 @@
 package web;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.Date;
 
 import javax.ejb.EJB;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonValue;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,9 +12,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import model.BaseFacade;
+import model.HistoryFacade;
+import model.WxHist;
+import model.WxUser;
 
 /**
  * Servlet implementation class HistoryServlet
@@ -32,15 +25,20 @@ public class HistoryServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	@EJB
-	BaseFacade bf;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public HistoryServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+	HistoryFacade hf;
+
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public HistoryServlet() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public WxUser GetUserBean (int uid){
+		System.out.println("GetUser Bean, u="+uid);
+		return hf.getUser(uid);
+	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -57,91 +55,90 @@ public class HistoryServlet extends HttpServlet {
 	 */
 	@SuppressWarnings("unused")
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
 		doGet(request, response);
 		log(request.toString()); log(response.toString());
-
-		
-//		JsonObject object = Json.createObjectBuilder().build();
-//		JsonObject jo = new JsonObject();
-//		JsonObject jo;
-//		JsonValue jv;
-//		jv = "test";
-//		
-//		object.put("user", "test");
-//		
-//		try {
-//			JsonParser parser;
-//			JsonObject parse = parser.parse(request.getReader());
-//		} catch (Exception e) {
-//	
-//		}
-//		
-//		JsonObject returnValue;
-//		JsonValue jv = "success";
-//		returnValue.put("user", new JsonValue("sucess"));
-//		returnValue.put("user", "success");
-//		response.getWriter().print(returnValue);
-		
-		String u = "HistoryServlet for now";
+		PrintWriter out = response.getWriter();  
+		RequestDispatcher rd=request.getRequestDispatcher("index.html");  
+		response.setContentType("text/html");  
 
 		final String cookieName = "TimeMachine_history";
-		final String cookieValue = "This Does Nothing";  // you could assign it some encoded value
 		final Boolean useSecureCookie = false;
 		final int expiryTime = 60 * 60 * 24;  // 24h in seconds
 		final String cookiePath = "/";
 
-		response.setContentType("text/html");  
-		PrintWriter out = response.getWriter();  
-
-		if (u != null) {
-			HttpSession session = request.getSession(true);
-			Date createTime = new Date(session.getCreationTime());
-			Date lastAccessTime = new Date(session.getLastAccessedTime());
-			Integer visitCount = new Integer(0);
-			String visitCountKey = new String("visitCount");
-			String userIDKey = new String(u);
-			String userID = new String(u);
-			if (session.isNew()){
-				session.setAttribute(userIDKey, userID);
-			} else {
-				visitCount = (Integer)session.getAttribute(visitCountKey);
-				visitCount = visitCount + 1;
-				userID = (String)session.getAttribute(userIDKey);
+		int uid = -1;
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals("TImeMachine_uid")) {
+					uid = Integer.valueOf(cookie.getValue());
+				}
 			}
-			session.setAttribute(visitCountKey,  visitCount);
+		}
 
-			Cookie tmc = new Cookie(cookieName, cookieValue);
+		WxHist history = new WxHist();
+		history.setDate(new Date());
+		history.setTitle("Testing HistoryServlet");
+		history.setLatitude("0");
+		history.setLongitude("0");
+		history.setWxUser(GetUserBean(uid));
+
+		boolean checkAddition = hf.addHistory(history, uid);
+
+		if (checkAddition == true) {
+			Cookie tmc = new Cookie(cookieName, "History Added");
 			tmc.setSecure(useSecureCookie);
 			tmc.setMaxAge(expiryTime);
 			tmc.setPath(cookiePath); 
 			response.addCookie(tmc);
-
-			RequestDispatcher rd=request.getRequestDispatcher("index.html");  
-			rd.include(request,response);  
-
-		
+			response.getWriter().print("history found");
+			response.addHeader("HISTORY_SERVLET", "OK");
+			response.setStatus(200);
 		} else {
-
-			Cookie tmc = new Cookie(cookieName, "History Servlet No Login");
+			Cookie tmc = new Cookie(cookieName, "History Error");
 			tmc.setSecure(useSecureCookie);
-			tmc.setMaxAge(expiryTime);	//set to 0 to delete cookie
+			tmc.setMaxAge(expiryTime);
 			tmc.setPath(cookiePath);
 			response.addCookie(tmc);
-
-			out.print("Sorry username or password error");  
-			RequestDispatcher rd=request.getRequestDispatcher("index.html");  
-
-			response.getWriter().print("fail");
-			response.addHeader("HISTORY_SERVLET", "OK");
-//			request.setAttribute("user", "");
-
-			rd.include(request,response);  
+			response.setStatus(418);
 		}
 
+
+
+		//		JsonObject object = Json.createObjectBuilder().build();
+		//		JsonObject jo = new JsonObject();
+		//		JsonObject jo;
+		//		JsonValue jv;
+		//		jv = "test";
+		//		
+		//		object.put("user", "test");
+		//		
+		//		try {
+		//			JsonParser parser;
+		//			JsonObject parse = parser.parse(request.getReader());
+		//		} catch (Exception e) {
+		//	
+		//		}
+		//		
+		//		JsonObject returnValue;
+		//		JsonValue jv = "success";
+		//		returnValue.put("user", new JsonValue("sucess"));
+		//		returnValue.put("user", "success");
+		//		response.getWriter().print(returnValue);
+
+
+
+		//		if (u != null) {
+		//			RequestDispatcher rd=request.getRequestDispatcher("index.html");  
+		//			rd.include(request,response);  
+		//		} else {
+		//			out.print("Sorry username or password error");  
+		//			RequestDispatcher rd=request.getRequestDispatcher("index.html");  	
+		//			rd.include(request,response);  
+		//		}
+
+		rd.include(request,response);  
 	}
-	
-
-
-	
 
 }

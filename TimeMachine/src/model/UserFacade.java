@@ -26,7 +26,7 @@ public class UserFacade {
 	}
 
 	public WxUser checkLogin (String user, String pass){
-		String u = null;
+
 		WxUser userResult = null;
 
 		try {
@@ -35,7 +35,6 @@ public class UserFacade {
 			q.setParameter("pass", pass);
 			System.out.println(q.toString());
 			userResult = (WxUser) q.getSingleResult();
-			u = userResult.getUserName();
 			System.out.println(q.toString());
 			return userResult;
 		}
@@ -59,13 +58,6 @@ public class UserFacade {
 		r.setUserPass(pass);
 		
 		try {
-//			Query q = em.createQuery("INSERT INTO WxUser(u.userName, u.userPass) VALUES (:name, :pass)");
-//			q.setParameter("name", user);
-//			q.setParameter("pass", pass);
-//			System.out.println(q.toString());
-
-//			WxUser userResult = em.find(WxUser.class, user);
-
 			em.persist(r);
 			r = checkLogin(r.getUserName(), r.getUserPass()); //pulls the object so we know what the autoincrement ID is
 			return r;
@@ -81,10 +73,10 @@ public class UserFacade {
 			f.printStackTrace();
 			return null;
 		}
-		
-		
-//		return r;
+
 	}
+	
+
 
 	public String checkLogin2 (String user, String pass) {
 

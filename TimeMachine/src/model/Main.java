@@ -107,7 +107,7 @@ public class Main {
 //		u = l.LoginBean("1","1");
 //		System.out.println("EM returns: " + u);
 		
-		u = l.LoginBean("1","1");
+//		u = l.LoginBean("1","1");
 		System.out.println("EM returns: " + u);
 		
 	}

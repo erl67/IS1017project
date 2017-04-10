@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import model.BaseFacade;
+import model.WeatherFacade;
 
 /**
  * Servlet implementation class WeatherServlet
@@ -32,7 +32,7 @@ public class WeatherServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	@EJB
-	BaseFacade bf;
+	WeatherFacade wf;
 	
     public WeatherServlet() {
         super();
@@ -72,12 +72,12 @@ public class WeatherServlet extends HttpServlet {
 //	
 //		}
 //		
-		JsonObject returnValue;
-		JsonValue jv = "success";
-		returnValue.put("user", new JsonValue("sucess"));
-		returnValue.put("user", "success");
-		response.getWriter().print(returnValue);
-		
+//		JsonObject returnValue;
+//		JsonValue jv = "success";
+//		returnValue.put("user", new JsonValue("sucess"));
+//		returnValue.put("user", "success");
+//		response.getWriter().print(returnValue);
+//		
 		String u = "WeatherServlet for now";
 
 		final String cookieName = "TimeMachine_weatherservlet";

@@ -61,6 +61,7 @@ public class LoginServlet extends HttpServlet {
 		
 		response.setContentType("text/html");  
 		PrintWriter out = response.getWriter();  
+		RequestDispatcher rd=request.getRequestDispatcher("index.html");  
 		
 		final Boolean useSecureCookie = false;
 		final int expiryTime = 60 * 60 * 1;  // 1h in seconds
@@ -105,7 +106,6 @@ public class LoginServlet extends HttpServlet {
 			response.addCookie(tmc); response.addCookie(uid);
 
 			out.print("Login Success for user: " + u);  
-			RequestDispatcher rd=request.getRequestDispatcher("index.html");  
 
 			response.getWriter().print("success");
 			response.addHeader("LOGIN_STATUS", "SUCCESS");
@@ -113,13 +113,10 @@ public class LoginServlet extends HttpServlet {
 			response.sendRedirect("/TimeMachine/");
 			request.setAttribute("session", session);
 			response.setStatus(200);
-
-			rd.include(request,response);  
-
 		} else {
 
 			Cookie tmc = new Cookie("TimeMachine_cookie", "Failed Login");
-			Cookie uid = new Cookie("TImeMachine_uid", "-1");
+			Cookie uid = new Cookie("TImeMachine_uid", "0");
 			tmc.setSecure(useSecureCookie);
 			tmc.setMaxAge(expiryTime);	//set to 0 to delete cookie
 			tmc.setPath(cookiePath);
@@ -128,7 +125,6 @@ public class LoginServlet extends HttpServlet {
 			response.addCookie(tmc); response.addCookie(uid);
 
 			out.print("Sorry username or password error");  
-			RequestDispatcher rd=request.getRequestDispatcher("index.html");  
 
 			response.getWriter().print("fail");
 			response.addHeader("LOGIN_STATUS", "FAILURE");
@@ -136,8 +132,8 @@ public class LoginServlet extends HttpServlet {
 			request.setAttribute("user", "");
 			response.sendRedirect("/TimeMachine/login/");
 
-			rd.include(request,response);  
 		}
+		rd.include(request,response);  
 
 	}
 
