@@ -95,6 +95,7 @@
     $rootScope.getDarkSkyData = function(queryInfo) {
       //if($rootScope.user.loggedIn) {
       queryInfo.username = $rootScope.user.username || null;
+      console.log(queryInfo);
       $http.post('/TimeMachine/HistoryServlet', queryInfo)
         .then(function success(response) {
           console.log(response);
