@@ -43,8 +43,8 @@ public class RegisterServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.getWriter().println("\n\n\nLoginServletTest\n\n\n");
 		response.getWriter().append("Served at: ").append(request.getContextPath());
-		response.addHeader("SERVLET_STATUS", "something");
-		response.setStatus(100);
+		response.addHeader("SERVLET_STATUS", "ok");
+//		response.setStatus(204);
 	}
 
 	/**
@@ -66,7 +66,6 @@ public class RegisterServlet extends HttpServlet {
 
 		WxUser u = RegisterBean(username, password);
 		
-
 		if (u != null) {
 
 			out.print("Register Success for user: " + u);  
@@ -87,7 +86,6 @@ public class RegisterServlet extends HttpServlet {
 			response.setStatus(200);
 
 			rd.include(request,response);
-//			uf.checkLogin(username, password);
 
 		} else {
 

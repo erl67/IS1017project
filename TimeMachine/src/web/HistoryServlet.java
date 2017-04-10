@@ -2,12 +2,10 @@ package web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Reader;
 import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,7 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JsonArray;
 import org.json.simple.JsonObject;
@@ -31,7 +28,6 @@ import model.WxUser;
 /**
  * Servlet implementation class HistoryServlet
  */
-@SuppressWarnings("deprecation")
 @WebServlet({ "/HistoryServlet", "/h" })
 public class HistoryServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -44,7 +40,6 @@ public class HistoryServlet extends HttpServlet {
 	 */
 	public HistoryServlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public WxUser GetUserBean (int uid){
@@ -61,6 +56,10 @@ public class HistoryServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		response.getWriter().println("\n\n\nHistoryServletTest\n\n\n");
+		response.getWriter().append("Served at: ").append(request.getContextPath());
+		response.addHeader("SERVLET_STATUS", "ok");
 
 		int uid = -1;
 		Cookie[] cookies = request.getCookies();
@@ -74,18 +73,14 @@ public class HistoryServlet extends HttpServlet {
 
 		List<WxHist> historyList = GetHistoryBean(uid);
 		for (WxHist i : historyList) System.out.println(i.getId() + " " + i.getWxUser() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude());
+		for (WxHist i : historyList) response.getWriter().append("Data retrieved: ").append((i.getId() + " " + i.getWxUser() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude()));
 
-
-		response.getWriter().println("\n\n\nHistoryServletTest\n\n\n");
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-		response.addHeader("SERVLET_STATUS", "something");
 		response.setStatus(200);
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	@SuppressWarnings({ "unused", "static-access", "deprecation" })
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		doGet(request, response);
@@ -94,7 +89,8 @@ public class HistoryServlet extends HttpServlet {
 		RequestDispatcher rd=request.getRequestDispatcher("index.html");  
 		response.setContentType("text/html");  
 		
-//		JsonObject jsonData = request.getParameter("password");
+		List<WxHist> historyList = null;
+//		JsonObject jsonData = request.getParameter("history");
 
 		final String cookieName = "TimeMachine_history";
 		final Boolean useSecureCookie = false;
@@ -129,6 +125,24 @@ public class HistoryServlet extends HttpServlet {
 			response.getWriter().print("history found");
 			response.addHeader("HISTORY_SERVLET", "OK");
 			response.setStatus(200);
+			
+			historyList = GetHistoryBean(uid);
+
+			JsonObject jHistory = new JsonObject();
+			for (WxHist i : historyList) {
+				
+				System.out.println(i.getId() + " " + i.getWxUser() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude());
+				
+				jHistory.put("date", i.getDate());
+				jHistory.put("latitude",i.getLatitude());
+				jHistory.put("longitude",  String.valueOf(i.getLongitude()));
+				jHistory.put("title", i.getTitle());
+				jHistory.put("user", i.getWxUser().getUserName());
+				jHistory.put("id", i.getId());	
+			}
+			
+			response.addHeader("history", historyList.toString());
+			response.addHeader("json", historyList.toString());
 
 		} else {
 			Cookie tmc = new Cookie(cookieName, "History Error");
@@ -139,65 +153,56 @@ public class HistoryServlet extends HttpServlet {
 			response.setStatus(418);
 		}
 
-		JsonObject jHistory = new JsonObject();  // = Json.createObjectBuilder().build();
+//		JsonObject jHistory = new JsonObject();  // = Json.createObjectBuilder().build();
+//
+//		//Get previous history results
+//
 
-		//Get previous history results
-
-		List<WxHist> historyList = GetHistoryBean(uid);
-		for (WxHist i : historyList) {
-			System.out.println(i.getId() + " " + i.getWxUser() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude());
-			jHistory.put("date", i.getDate());
-			jHistory.put("latitude",i.getLatitude());
-			jHistory.put("longitude",  String.valueOf(i.getLongitude()));
-			jHistory.put("title", i.getTitle());
-			jHistory.put("user", i.getWxUser().getUserName());
-			jHistory.put("id", i.getId());	
-		}
-
-		log(jHistory.toString());
-
-		//Read previous history
-
-		JsonObject newHist = new JsonObject();
-		String s = "[0,{\"1\":{\"2\":{\"3\":{\"4\":[5,{\"6\":7}]}}}}]";
-
-		try{
-
-			JSONParser parser = new JSONParser();
-			JSONObject json = (JSONObject) parser.parse(jHistory.toString());
-
-			//	    	  Object obj = p.deserialize(jHistory.toString());
-			Jsoner p = null;
-			Object obj = p.deserialize(jHistory.toString(), newHist);
-
-			JsonObject jsonObject = (JsonObject) obj;
-			JsonArray array = (JsonArray)obj;
-
-			System.out.println("The 2nd element of array");
-			System.out.println(array.get(1));
-			System.out.println();
-
-			JsonObject obj2 = (JsonObject)array.get(1);
-			System.out.println("Field \"1\"");
-			System.out.println(obj2.get("1"));    
-
-			s = "{}";
-			obj = parser.parse(s);
-			System.out.println(obj);
-
-			s = "[5,]";
-			obj = parser.parse(s);
-			System.out.println(obj);
-
-			s = "[5,,2]";
-			obj = parser.parse(s);
-			System.out.println(obj);
-		}catch(ParseException pe){
-
-			System.out.println("position: " + pe.getPosition());
-			System.out.println(pe);
-		}
-
+//
+//		log(jHistory.toString());
+//
+//		//Read previous history
+//
+//		JsonObject newHist = new JsonObject();
+//		String s = "[0,{\"1\":{\"2\":{\"3\":{\"4\":[5,{\"6\":7}]}}}}]";
+//
+//		try{
+//
+//			JSONParser parser = new JSONParser();
+//			JSONObject json = (JSONObject) parser.parse(jHistory.toString());
+//
+//			//	    	  Object obj = p.deserialize(jHistory.toString());
+//			Jsoner p = null;
+//			Object obj = p.deserialize(jHistory.toString(), newHist);
+//
+//			JsonObject jsonObject = (JsonObject) obj;
+//			JsonArray array = (JsonArray)obj;
+//
+//			System.out.println("The 2nd element of array");
+//			System.out.println(array.get(1));
+//			System.out.println();
+//
+//			JsonObject obj2 = (JsonObject)array.get(1);
+//			System.out.println("Field \"1\"");
+//			System.out.println(obj2.get("1"));    
+//
+//			s = "{}";
+//			obj = parser.parse(s);
+//			System.out.println(obj);
+//
+//			s = "[5,]";
+//			obj = parser.parse(s);
+//			System.out.println(obj);
+//
+//			s = "[5,,2]";
+//			obj = parser.parse(s);
+//			System.out.println(obj);
+//		}catch(ParseException pe){
+//
+//			System.out.println("position: " + pe.getPosition());
+//			System.out.println(pe);
+//		}
+//
 
 		
 		//		try {

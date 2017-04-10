@@ -25,10 +25,10 @@ public class HistoryFacade {
 		List<WxHist> results = null;
 
 		try {
-			Query q = em.createQuery("SELECT u FROM WxHist u WHERE (u.fk_user= :id)");
-			q.setParameter("id", uid);
+			WxUser user = em.find(WxUser.class, uid);
+			Query q = em.createQuery("SELECT u FROM WxHist u WHERE (u.wxUser=:id)");
+			q.setParameter("id", user);
 			System.out.println(q.toString());
-//			results = (List<WxHist>) q.getResultList();
 			results = q.getResultList();
 			for (WxHist i : results) System.out.println(i.getId() + " " + i.getWxUser() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude());
 			return results;
@@ -65,13 +65,18 @@ public class HistoryFacade {
 		}
 	}
 	
+	/**
+	 * @param uid
+	 * @return WxUser Object
+	 * This method is similar to the code: WxUser user = em.find(WxUser.class, uid);
+	 */
 	public WxUser getUser (int uid) {
 		
 		try {
-			Query q = em.createQuery("SELECT u FROM WxUser u WHERE (u.id= :uid)");
-			q.setParameter("uid", uid);
-			WxUser userResult = (WxUser) q.getSingleResult();
-//			WxUser userResult = em.find(WxUser.class, r);
+//			Query q = em.createQuery("SELECT u FROM WxUser u WHERE (u.id= :uid)");
+//			q.setParameter("uid", uid);
+//			WxUser userResult = (WxUser) q.getSingleResult();
+			WxUser userResult = em.find(WxUser.class, uid);
 			System.out.println(userResult.getId() + " " + userResult.getUserName());
 			return userResult;
 		}
