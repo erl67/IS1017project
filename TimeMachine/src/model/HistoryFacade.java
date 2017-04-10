@@ -20,15 +20,12 @@ public class HistoryFacade {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<WxHist> getHistory (WxHist history){
+	public List<WxHist> getHistory (int uid){
 
-		int uid = history.getWxUser().getId();
-//		int uid = getWxUser(uid);
-		history.setWxUser(getUser(uid));
 		List<WxHist> results = null;
 
 		try {
-			Query q = em.createQuery("SELECT u FROM WxHist u WHERE (u.uid= :id)");
+			Query q = em.createQuery("SELECT u FROM WxHist u WHERE (u.fk_user= :id)");
 			q.setParameter("id", uid);
 			System.out.println(q.toString());
 //			results = (List<WxHist>) q.getResultList();

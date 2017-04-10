@@ -3,6 +3,7 @@ package web;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
@@ -38,6 +39,11 @@ public class HistoryServlet extends HttpServlet {
 	public WxUser GetUserBean (int uid){
 		System.out.println("GetUser Bean, u="+uid);
 		return hf.getUser(uid);
+	}
+	
+	public List<WxHist> GetHistoryBean (int uid){
+		System.out.println("GetUser Bean, u="+uid);
+		return hf.getHistory(uid);
 	}
 
 	/**
