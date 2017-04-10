@@ -14,30 +14,34 @@ import javax.persistence.Query;
 
 
 @Stateless
-public class BaseFacade {
+public class UserFacade {
 
 	@PersistenceContext(unitName = "TimeMachine")
 	EntityManager em;
-	//protected EntityManager em = EntityManagerFactory.createEntityManager();
 	
 	static Query q;
 
-	public BaseFacade(){
+	public UserFacade(){
 		super();
 	}
 
-	public String checkLogin (String user, String pass){
+	public WxUser checkLogin (String user, String pass){
 		String u = null;
+		WxUser userResult = null;
 
 		try {
 			Query q = em.createQuery("SELECT u FROM WxUser u WHERE ((u.userName= :name) AND (u.userPass= :pass))");
 			q.setParameter("name", user);
 			q.setParameter("pass", pass);
 			System.out.println(q.toString());
-			WxUser userEnt = (WxUser) q.getSingleResult();
-			u = userEnt.getUserName();
+			userResult = (WxUser) q.getSingleResult();
+			u = userResult.getUserName();
 			System.out.println(q.toString());
-			return u;
+			return userResult;
+		}
+		catch (NoResultException d) {
+			d.printStackTrace();
+			return null;
 		}
 		catch (NullPointerException e) {
 			e.printStackTrace();
@@ -46,7 +50,40 @@ public class BaseFacade {
 			f.printStackTrace();
 			return null;
 		}
+	}
+	
+	public WxUser registerUser (String user, String pass) {
+		
+		WxUser r = new WxUser ();
+		r.setUserName(user);
+		r.setUserPass(pass);
+		
+		try {
+//			Query q = em.createQuery("INSERT INTO WxUser(u.userName, u.userPass) VALUES (:name, :pass)");
+//			q.setParameter("name", user);
+//			q.setParameter("pass", pass);
+//			System.out.println(q.toString());
 
+//			WxUser userResult = em.find(WxUser.class, user);
+
+			em.persist(r);
+			r = checkLogin(r.getUserName(), r.getUserPass()); //pulls the object so we know what the autoincrement ID is
+			return r;
+		}
+		catch (NoResultException d) {
+			d.printStackTrace();
+			return null;
+		}
+		catch (NullPointerException e) {
+			e.printStackTrace();
+			return null;
+		} catch (Exception f) {
+			f.printStackTrace();
+			return null;
+		}
+		
+		
+//		return r;
 	}
 
 	public String checkLogin2 (String user, String pass) {
