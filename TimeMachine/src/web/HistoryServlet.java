@@ -2,10 +2,12 @@ package web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,6 +16,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JsonArray;
+import org.json.simple.JsonObject;
+import org.json.simple.Jsoner;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import model.HistoryFacade;
 import model.WxHist;
 import model.WxUser;
@@ -21,6 +31,7 @@ import model.WxUser;
 /**
  * Servlet implementation class HistoryServlet
  */
+@SuppressWarnings("deprecation")
 @WebServlet({ "/HistoryServlet", "/h" })
 public class HistoryServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -40,7 +51,7 @@ public class HistoryServlet extends HttpServlet {
 		System.out.println("GetUser Bean, u="+uid);
 		return hf.getUser(uid);
 	}
-	
+
 	public List<WxHist> GetHistoryBean (int uid){
 		System.out.println("GetUser Bean, u="+uid);
 		return hf.getHistory(uid);
@@ -50,6 +61,21 @@ public class HistoryServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		int uid = -1;
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals("TImeMachine_uid")) {
+					uid = Integer.valueOf(cookie.getValue());
+				}
+			}
+		}
+
+		List<WxHist> historyList = GetHistoryBean(uid);
+		for (WxHist i : historyList) System.out.println(i.getId() + " " + i.getWxUser() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude());
+
+
 		response.getWriter().println("\n\n\nHistoryServletTest\n\n\n");
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 		response.addHeader("SERVLET_STATUS", "something");
@@ -59,7 +85,7 @@ public class HistoryServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	@SuppressWarnings("unused")
+	@SuppressWarnings({ "unused", "static-access", "deprecation" })
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		doGet(request, response);
@@ -67,6 +93,8 @@ public class HistoryServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();  
 		RequestDispatcher rd=request.getRequestDispatcher("index.html");  
 		response.setContentType("text/html");  
+		
+//		JsonObject jsonData = request.getParameter("password");
 
 		final String cookieName = "TimeMachine_history";
 		final Boolean useSecureCookie = false;
@@ -101,6 +129,7 @@ public class HistoryServlet extends HttpServlet {
 			response.getWriter().print("history found");
 			response.addHeader("HISTORY_SERVLET", "OK");
 			response.setStatus(200);
+
 		} else {
 			Cookie tmc = new Cookie(cookieName, "History Error");
 			tmc.setSecure(useSecureCookie);
@@ -110,23 +139,74 @@ public class HistoryServlet extends HttpServlet {
 			response.setStatus(418);
 		}
 
+		JsonObject jHistory = new JsonObject();  // = Json.createObjectBuilder().build();
+
+		//Get previous history results
+
+		List<WxHist> historyList = GetHistoryBean(uid);
+		for (WxHist i : historyList) {
+			System.out.println(i.getId() + " " + i.getWxUser() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude());
+			jHistory.put("date", i.getDate());
+			jHistory.put("latitude",i.getLatitude());
+			jHistory.put("longitude",  String.valueOf(i.getLongitude()));
+			jHistory.put("title", i.getTitle());
+			jHistory.put("user", i.getWxUser().getUserName());
+			jHistory.put("id", i.getId());	
+		}
+
+		log(jHistory.toString());
+
+		//Read previous history
+
+		JsonObject newHist = new JsonObject();
+		String s = "[0,{\"1\":{\"2\":{\"3\":{\"4\":[5,{\"6\":7}]}}}}]";
+
+		try{
+
+			JSONParser parser = new JSONParser();
+			JSONObject json = (JSONObject) parser.parse(jHistory.toString());
+
+			//	    	  Object obj = p.deserialize(jHistory.toString());
+			Jsoner p = null;
+			Object obj = p.deserialize(jHistory.toString(), newHist);
+
+			JsonObject jsonObject = (JsonObject) obj;
+			JsonArray array = (JsonArray)obj;
+
+			System.out.println("The 2nd element of array");
+			System.out.println(array.get(1));
+			System.out.println();
+
+			JsonObject obj2 = (JsonObject)array.get(1);
+			System.out.println("Field \"1\"");
+			System.out.println(obj2.get("1"));    
+
+			s = "{}";
+			obj = parser.parse(s);
+			System.out.println(obj);
+
+			s = "[5,]";
+			obj = parser.parse(s);
+			System.out.println(obj);
+
+			s = "[5,,2]";
+			obj = parser.parse(s);
+			System.out.println(obj);
+		}catch(ParseException pe){
+
+			System.out.println("position: " + pe.getPosition());
+			System.out.println(pe);
+		}
 
 
-		//		JsonObject object = Json.createObjectBuilder().build();
-		//		JsonObject jo = new JsonObject();
-		//		JsonObject jo;
-		//		JsonValue jv;
-		//		jv = "test";
-		//		
-		//		object.put("user", "test");
-		//		
+		
 		//		try {
 		//			JsonParser parser;
 		//			JsonObject parse = parser.parse(request.getReader());
 		//		} catch (Exception e) {
 		//	
 		//		}
-		//		
+
 		//		JsonObject returnValue;
 		//		JsonValue jv = "success";
 		//		returnValue.put("user", new JsonValue("sucess"));
@@ -135,14 +215,6 @@ public class HistoryServlet extends HttpServlet {
 
 
 
-		//		if (u != null) {
-		//			RequestDispatcher rd=request.getRequestDispatcher("index.html");  
-		//			rd.include(request,response);  
-		//		} else {
-		//			out.print("Sorry username or password error");  
-		//			RequestDispatcher rd=request.getRequestDispatcher("index.html");  	
-		//			rd.include(request,response);  
-		//		}
 
 		rd.include(request,response);  
 	}

@@ -10,9 +10,6 @@ import java.net.URLConnection;
 import java.util.Date;
 
 import javax.ejb.EJB;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonValue;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,6 +18,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.json.simple.JsonObject;
+import org.json.simple.Jsonable;
 
 import model.WeatherFacade;
 
@@ -57,10 +57,9 @@ public class WeatherServlet extends HttpServlet {
 		log(request.toString()); log(response.toString());
 
 		
-		JsonObject object = Json.createObjectBuilder().build();
-//		JsonObject jo = new JsonObject();
-		JsonObject jo;
-		JsonValue jv;
+		JsonObject object;// = Json.createObjectBuilder().build();
+		JsonObject jo = new JsonObject();
+		Jsonable jv;
 //		jv = "test";
 //		
 //		object.put("user", "test");
