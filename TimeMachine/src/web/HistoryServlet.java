@@ -1,7 +1,6 @@
 package web;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,7 +25,6 @@ import model.WxUser;
 /**
  * Servlet implementation class HistoryServlet
  */
-@SuppressWarnings("deprecation")
 @WebServlet({ "/HistoryServlet", "/h" })
 public class HistoryServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -67,7 +65,6 @@ public class HistoryServlet extends HttpServlet {
 			jh += "\n\t\"Latitude\": "+ i.getLatitude() + ",";
 			jh += "\n\t\"Longitude\": " + i.getLongitude() + "";
 			jh += "\n\t},";
-//			response.getWriter().println(i.getId() + " " + i.getWxUser().getUserName() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude()+"\n");
 			log(jh.toString());		
 		}
 		jh = jh.substring(0, jh.length() - 1); //remove last comma
@@ -81,21 +78,17 @@ public class HistoryServlet extends HttpServlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 //		response.setContentType("text/html");  
 		response.setContentType("application/json");  
 		response.getWriter().println("\n\n\nHistoryServletTest\n\n\n");
 		response.getWriter().append("Served at: ").append(request.getContextPath() + "\n\n\n");
 		response.addHeader("SERVLET_STATUS", "ok");
 
-
 		int uid = -1;
 		Cookie[] cookies = request.getCookies();
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
-				if (cookie.getName().equals("TImeMachine_uid")) {
-					uid = Integer.valueOf(cookie.getValue());
-				}
+				if (cookie.getName().equals("TimeMachine_uid"))	uid = Integer.valueOf(cookie.getValue());
 			}
 		}
 		
@@ -103,7 +96,6 @@ public class HistoryServlet extends HttpServlet {
 		
 		
 //		JsonObject queryJson = Jsoner.deserialize(request.getReader().readLine(), new JsonObject());
-//		Writer writer;
 		
 //		String jHistory = historyList.iterator().toString();
 //		String jh = historyList.toString();
@@ -113,20 +105,21 @@ public class HistoryServlet extends HttpServlet {
 //		log(jHistory2.toString());
 		
 		
-		try {
+//		try {
 //			jHistory = Jsoner.serialize(jHistory);
 //			jHistory2 = Jsoner.serialize(jHistory2);
 //			jHistory = Jsoner.serialize(jsonSerializable);
 //			String jh = Jsoner.serialize(historyList);
 //			log ("jh= " + jh + "/n" + "jHistory= " + jHistory);
-		} 
-		catch (NoClassDefFoundError e) {
-			e.printStackTrace();
-		}catch (Exception f) {
-			f.printStackTrace();
-		}
+//		} 
+//		catch (NoClassDefFoundError e) {
+//			e.printStackTrace();
+//		}catch (Exception f) {
+//			f.printStackTrace();
+//		}
 
 //		response.getWriter().println("json created= "+ jHistory.toString());
+		
 		response.getWriter().println("jh manual json=\n"+ jh);
 		response.addHeader("json", jh);
 		response.setStatus(200);
@@ -136,11 +129,9 @@ public class HistoryServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	@Override
-	@SuppressWarnings("deprecation")
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		log(request.toString()); log(response.toString());
-		PrintWriter out = response.getWriter();  
 		RequestDispatcher rd=request.getRequestDispatcher("index.html");  
 //		response.setContentType("text/html");  
 		response.setContentType("application/json");  
@@ -148,8 +139,6 @@ public class HistoryServlet extends HttpServlet {
 		
 		JsonObject queryJson = Jsoner.deserialize(request.getReader().readLine(), new JsonObject());
 		
-		List<WxHist> historyList = null;
-
 		final String cookieName = "TimeMachine_history";
 		final Boolean useSecureCookie = false;
 		final int expiryTime = 60 * 60 * 24;  // 24h in seconds
@@ -159,9 +148,7 @@ public class HistoryServlet extends HttpServlet {
 		Cookie[] cookies = request.getCookies();
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
-				if (cookie.getName().equals("TImeMachine_uid")) {
-					uid = Integer.valueOf(cookie.getValue());
-				}
+				if (cookie.getName().equals("TimeMachine_uid"))	uid = Integer.valueOf(cookie.getValue());
 			}
 		}
 
@@ -193,11 +180,6 @@ public class HistoryServlet extends HttpServlet {
 			String jh = jsonHistory (uid);
 			
 			response.getWriter().println("jh manual json=\n"+ jh);			
-			
-//			historyList = GetHistoryBean(uid);
-//			for (WxHist i : historyList) {			
-//				log(i.getId() + " " + i.getWxUser() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude());
-//			}
 			
 			response.setStatus(200);
 			response.addHeader("history", jh);
