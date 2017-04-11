@@ -14,12 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.simple.JSONObject;
-import org.json.simple.JsonArray;
 import org.json.simple.JsonObject;
-import org.json.simple.Jsoner;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import model.HistoryFacade;
 import model.WxHist;

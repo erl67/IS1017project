@@ -1,9 +1,9 @@
 package model;
 
 import javax.ejb.Stateless;
+import javax.management.Query;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 @Stateless
 public class WeatherFacade {

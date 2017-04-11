@@ -8,10 +8,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 
-import javax.json.JsonObject;
+import org.json.simple.JsonObject;
 
-import web.*;
-import model.*;
+import web.LoginServlet;
+import web.WeatherServlet;
 
 public class Main {
 	
