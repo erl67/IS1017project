@@ -114,7 +114,6 @@ public class LoginServlet extends HttpServlet {
 			request.setAttribute("session", session);
 			response.setStatus(200);
 		} else {
-
 			Cookie tmc = new Cookie("TimeMachine_cookie", "Failed Login");
 			Cookie uid = new Cookie("TImeMachine_uid", "0");
 			tmc.setSecure(useSecureCookie);

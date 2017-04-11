@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
+import javax.json.JsonValue;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,7 +15,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONObject;
 import org.json.simple.JsonObject;
+import org.json.simple.parser.JSONParser;
 
 import model.HistoryFacade;
 import model.WxHist;
@@ -23,6 +26,7 @@ import model.WxUser;
 /**
  * Servlet implementation class HistoryServlet
  */
+@SuppressWarnings("deprecation")
 @WebServlet({ "/HistoryServlet", "/h" })
 public class HistoryServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -53,7 +57,7 @@ public class HistoryServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		response.getWriter().println("\n\n\nHistoryServletTest\n\n\n");
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		response.getWriter().append("Served at: ").append(request.getContextPath() + "\n\n\n");
 		response.addHeader("SERVLET_STATUS", "ok");
 
 		int uid = -1;
@@ -65,17 +69,32 @@ public class HistoryServlet extends HttpServlet {
 				}
 			}
 		}
-
+		
 		List<WxHist> historyList = GetHistoryBean(uid);
-		for (WxHist i : historyList) System.out.println(i.getId() + " " + i.getWxUser() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude());
-		for (WxHist i : historyList) response.getWriter().append("Data retrieved: ").append((i.getId() + " " + i.getWxUser() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude()));
-
+		Object jHistory = "Object of nothing";
+		
+		for (WxHist i : historyList) {
+			
+			response.getWriter().println(i.getId() + " " + i.getWxUser().getUserName() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude()+"\n");
+			
+//			jHistory.put("date", (JsonValue) i.getDate());
+//			jHistory.put("latitude",i.getLatitude());
+//			jHistory.put("longitude",  String.valueOf(i.getLongitude()));
+//			jHistory.put("title", i.getTitle());
+//			jHistory.put("user", i.getWxUser().getUserName());
+//			jHistory.put("id", i.getId());	
+//			log(jHistory.toString());
+			
+		}
+		response.getWriter().println("json created= "+ jHistory.toString());
+		
 		response.setStatus(200);
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@SuppressWarnings("deprecation")
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		doGet(request, response);
@@ -84,8 +103,15 @@ public class HistoryServlet extends HttpServlet {
 		RequestDispatcher rd=request.getRequestDispatcher("index.html");  
 		response.setContentType("text/html");  
 		
+		JSONParser parser = new JSONParser();
+		try {
+			JSONObject json = (JSONObject) parser.parse(request.getParameter("json"));
+			log("json= " + json.toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		List<WxHist> historyList = null;
-//		JsonObject jsonData = request.getParameter("history");
 
 		final String cookieName = "TimeMachine_history";
 		final Boolean useSecureCookie = false;
@@ -123,19 +149,20 @@ public class HistoryServlet extends HttpServlet {
 			
 			historyList = GetHistoryBean(uid);
 
-			JsonObject jHistory = new JsonObject();
+//			JsonObject jHistory = new JsonObject();
 			for (WxHist i : historyList) {
 				
-				System.out.println(i.getId() + " " + i.getWxUser() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude());
+				log(i.getId() + " " + i.getWxUser() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude());
 				
-				jHistory.put("date", i.getDate());
-				jHistory.put("latitude",i.getLatitude());
-				jHistory.put("longitude",  String.valueOf(i.getLongitude()));
-				jHistory.put("title", i.getTitle());
-				jHistory.put("user", i.getWxUser().getUserName());
-				jHistory.put("id", i.getId());	
+//				jHistory.put("date", i.getDate());
+//				jHistory.put("latitude",i.getLatitude());
+//				jHistory.put("longitude",  String.valueOf(i.getLongitude()));
+//				jHistory.put("title", i.getTitle());
+//				jHistory.put("user", i.getWxUser().getUserName());
+//				jHistory.put("id", i.getId());	
 			}
 			
+//			log(jHistory.toString());
 			response.addHeader("history", historyList.toString());
 			response.addHeader("json", historyList.toString());
 
@@ -148,14 +175,7 @@ public class HistoryServlet extends HttpServlet {
 			response.setStatus(418);
 		}
 
-//		JsonObject jHistory = new JsonObject();  // = Json.createObjectBuilder().build();
-//
-//		//Get previous history results
-//
 
-//
-//		log(jHistory.toString());
-//
 //		//Read previous history
 //
 //		JsonObject newHist = new JsonObject();
@@ -212,9 +232,6 @@ public class HistoryServlet extends HttpServlet {
 		//		returnValue.put("user", new JsonValue("sucess"));
 		//		returnValue.put("user", "success");
 		//		response.getWriter().print(returnValue);
-
-
-
 
 		rd.include(request,response);  
 	}
