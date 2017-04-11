@@ -50,15 +50,44 @@ public class HistoryServlet extends HttpServlet {
 		System.out.println("GetUser Bean, u="+uid);
 		return hf.getHistory(uid);
 	}
+	
+	public String jsonHistory (int uid) {
+		
+		List<WxHist> historyList = GetHistoryBean(uid);
+		
+		String jh = "[";
+		
+		for (WxHist i : historyList) {
+			jh += "\n\t{";
+			jh += "\n\t\"Id\": " + i.getId() +",";
+			jh += "\n\t\"Name\": \""+ i.getWxUser().getUserName()+ "\",";
+			jh += "\n\t\"UID\": " + i.getWxUser().getId() +",";
+			jh += "\n\t\"Title\": \"" + i.getTitle() + "\",";
+			jh += "\n\t\"Date\": \"" + i.getDate() +"\",";
+			jh += "\n\t\"Latitude\": "+ i.getLatitude() + ",";
+			jh += "\n\t\"Longitude\": " + i.getLongitude() + "";
+			jh += "\n\t},";
+//			response.getWriter().println(i.getId() + " " + i.getWxUser().getUserName() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude()+"\n");
+			log(jh.toString());		
+		}
+		jh = jh.substring(0, jh.length() - 1); //remove last comma
+		jh += "\n]";
+		
+		return jh;
+	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+//		response.setContentType("text/html");  
+		response.setContentType("application/json");  
 		response.getWriter().println("\n\n\nHistoryServletTest\n\n\n");
 		response.getWriter().append("Served at: ").append(request.getContextPath() + "\n\n\n");
 		response.addHeader("SERVLET_STATUS", "ok");
+
 
 		int uid = -1;
 		Cookie[] cookies = request.getCookies();
@@ -70,37 +99,52 @@ public class HistoryServlet extends HttpServlet {
 			}
 		}
 		
-		List<WxHist> historyList = GetHistoryBean(uid);
-		Object jHistory = "Object of nothing";
+		String jh = jsonHistory (uid);
 		
-		for (WxHist i : historyList) {
-			
-			response.getWriter().println(i.getId() + " " + i.getWxUser().getUserName() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude()+"\n");
-			
-//			jHistory.put("date", (JsonValue) i.getDate());
-//			jHistory.put("latitude",i.getLatitude());
-//			jHistory.put("longitude",  String.valueOf(i.getLongitude()));
-//			jHistory.put("title", i.getTitle());
-//			jHistory.put("user", i.getWxUser().getUserName());
-//			jHistory.put("id", i.getId());	
-//			log(jHistory.toString());
-			
+		
+//		JsonObject queryJson = Jsoner.deserialize(request.getReader().readLine(), new JsonObject());
+//		Writer writer;
+		
+//		String jHistory = historyList.iterator().toString();
+//		String jh = historyList.toString();
+//		log ("historyList.toString())=" + historyList.toString());
+		
+//		JsonSerializable jHistory2 = (JsonSerializable) historyList;
+//		log(jHistory2.toString());
+		
+		
+		try {
+//			jHistory = Jsoner.serialize(jHistory);
+//			jHistory2 = Jsoner.serialize(jHistory2);
+//			jHistory = Jsoner.serialize(jsonSerializable);
+//			String jh = Jsoner.serialize(historyList);
+//			log ("jh= " + jh + "/n" + "jHistory= " + jHistory);
+		} 
+		catch (NoClassDefFoundError e) {
+			e.printStackTrace();
+		}catch (Exception f) {
+			f.printStackTrace();
 		}
-		response.getWriter().println("json created= "+ jHistory.toString());
-		
+
+//		response.getWriter().println("json created= "+ jHistory.toString());
+		response.getWriter().println("jh manual json=\n"+ jh);
+		response.addHeader("json", jh);
 		response.setStatus(200);
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	@SuppressWarnings("deprecation")
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		log(request.toString()); log(response.toString());
 		PrintWriter out = response.getWriter();  
 		RequestDispatcher rd=request.getRequestDispatcher("index.html");  
-		response.setContentType("text/html");  
+//		response.setContentType("text/html");  
+		response.setContentType("application/json");  
+
 		
 		JsonObject queryJson = Jsoner.deserialize(request.getReader().readLine(), new JsonObject());
 		
@@ -127,7 +171,6 @@ public class HistoryServlet extends HttpServlet {
 		try {
 			history.setDate(df.parse(date));
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		history.setTitle(queryJson.getString("title"));
@@ -147,24 +190,18 @@ public class HistoryServlet extends HttpServlet {
 			response.addHeader("HISTORY_SERVLET", "OK");
 			response.setStatus(200);
 			
-			historyList = GetHistoryBean(uid);
-
-//			JsonObject jHistory = new JsonObject();
-			for (WxHist i : historyList) {
-				
-				log(i.getId() + " " + i.getWxUser() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude());
-				
-//				jHistory.put("date", i.getDate());
-//				jHistory.put("latitude",i.getLatitude());
-//				jHistory.put("longitude",  String.valueOf(i.getLongitude()));
-//				jHistory.put("title", i.getTitle());
-//				jHistory.put("user", i.getWxUser().getUserName());
-//				jHistory.put("id", i.getId());	
-			}
+			String jh = jsonHistory (uid);
 			
-//			log(jHistory.toString());
-			response.addHeader("history", historyList.toString());
-			response.addHeader("json", historyList.toString());
+			response.getWriter().println("jh manual json=\n"+ jh);			
+			
+//			historyList = GetHistoryBean(uid);
+//			for (WxHist i : historyList) {			
+//				log(i.getId() + " " + i.getWxUser() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude());
+//			}
+			
+			response.setStatus(200);
+			response.addHeader("history", jh);
+			response.addHeader("json", jh);
 
 		} else {
 			Cookie tmc = new Cookie(cookieName, "History Error");
@@ -174,64 +211,6 @@ public class HistoryServlet extends HttpServlet {
 			response.addCookie(tmc);
 			response.setStatus(418);
 		}
-
-
-//		//Read previous history
-//
-//		JsonObject newHist = new JsonObject();
-//		String s = "[0,{\"1\":{\"2\":{\"3\":{\"4\":[5,{\"6\":7}]}}}}]";
-//
-//		try{
-//
-//			JSONParser parser = new JSONParser();
-//			JSONObject json = (JSONObject) parser.parse(jHistory.toString());
-//
-//			//	    	  Object obj = p.deserialize(jHistory.toString());
-//			Jsoner p = null;
-//			Object obj = p.deserialize(jHistory.toString(), newHist);
-//
-//			JsonObject jsonObject = (JsonObject) obj;
-//			JsonArray array = (JsonArray)obj;
-//
-//			System.out.println("The 2nd element of array");
-//			System.out.println(array.get(1));
-//			System.out.println();
-//
-//			JsonObject obj2 = (JsonObject)array.get(1);
-//			System.out.println("Field \"1\"");
-//			System.out.println(obj2.get("1"));    
-//
-//			s = "{}";
-//			obj = parser.parse(s);
-//			System.out.println(obj);
-//
-//			s = "[5,]";
-//			obj = parser.parse(s);
-//			System.out.println(obj);
-//
-//			s = "[5,,2]";
-//			obj = parser.parse(s);
-//			System.out.println(obj);
-//		}catch(ParseException pe){
-//
-//			System.out.println("position: " + pe.getPosition());
-//			System.out.println(pe);
-//		}
-//
-
-		
-		//		try {
-		//			JsonParser parser;
-		//			JsonObject parse = parser.parse(request.getReader());
-		//		} catch (Exception e) {
-		//	
-		//		}
-
-		//		JsonObject returnValue;
-		//		JsonValue jv = "success";
-		//		returnValue.put("user", new JsonValue("sucess"));
-		//		returnValue.put("user", "success");
-		//		response.getWriter().print(returnValue);
 
 		rd.include(request,response);  
 	}
