@@ -131,9 +131,7 @@ public class HistoryServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		log(request.toString()); log(response.toString());
-		RequestDispatcher rd=request.getRequestDispatcher("index.html");  
-//		response.setContentType("text/html");  
+		log(request.toString()); log(response.toString()); 
 		response.setContentType("application/json");  
 
 		
@@ -173,17 +171,11 @@ public class HistoryServlet extends HttpServlet {
 			tmc.setMaxAge(expiryTime);
 			tmc.setPath(cookiePath); 
 			response.addCookie(tmc);
-			response.getWriter().print("history found");
-			response.addHeader("HISTORY_SERVLET", "OK");
 			response.setStatus(200);
 			
-			String jh = jsonHistory (uid);
+			String jh = jsonHistory(uid);
 			
-			response.getWriter().println("jh manual json=\n"+ jh);			
-			
-			response.setStatus(200);
-			response.addHeader("history", jh);
-			response.addHeader("json", jh);
+			response.getWriter().println(jh);
 
 		} else {
 			Cookie tmc = new Cookie(cookieName, "History Error");
@@ -191,10 +183,9 @@ public class HistoryServlet extends HttpServlet {
 			tmc.setMaxAge(expiryTime);
 			tmc.setPath(cookiePath);
 			response.addCookie(tmc);
-			response.setStatus(418);
+			response.setStatus(500);
+			response.getWriter().println("{ \"error\": \"Query could not be saved to the database\" }");
 		}
-
-		rd.include(request,response);  
 	}
 
 }

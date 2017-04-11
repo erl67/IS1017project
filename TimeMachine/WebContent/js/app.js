@@ -98,9 +98,9 @@
       queryInfo.username = $rootScope.user.username || null;
       $http.post('/TimeMachine/HistoryServlet', queryInfo)
         .then(function success(response) {
-          console.log(response);
+          console.log(response.data);
         }, function error(response) {
-          console.log(response);
+          console.log(response.data);
         });
       //}
 
