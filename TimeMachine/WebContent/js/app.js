@@ -104,13 +104,19 @@
         });
       //}
 
-      var url = `https://crossorigin.me/https://api.darksky.net/forecast/472f1ba38a5f3d13407fdb589d975c8c/${queryInfo.latitude},${queryInfo.longitude},${queryInfo.date.toJSON().split('.')[0]}?exclude=minutely,hourly,flags`;
-      $http.get(url)
-        .then(function success(response) {
-          ds.data = response.data;
-        }, function failure(response) {
-          $rootScope.displayError(response.data.error);
-        });
+      var yearsArray = getYears(queryInfo.date);
+      yearsArray.forEach(date => console.log(date));
+      ds.weatherData = [];
+      yearsArray.forEach(function(date, index) {
+        console.log(date);
+        var url = `https://crossorigin.me/https://api.darksky.net/forecast/472f1ba38a5f3d13407fdb589d975c8c/${queryInfo.latitude},${queryInfo.longitude},${date.toJSON().split('.')[0]}?exclude=minutely,hourly,flags`;
+        $http.get(url)
+          .then(function success(response) {
+            ds.weatherData[index] = response.data;
+          }, function failure(response) {
+            $rootScope.displayError(response.data.error);
+          });
+      });
     };
   }]);
 
@@ -151,5 +157,26 @@
       console.log(points, evt);
     };
   });
+
+  function getYears(input) {
+    var current = new Date();
+    var dates = [];
+
+    for(var i = 0; i < 5; i++) {
+      dates.push(new Date(input));
+    }
+
+    var difference = current.getFullYear() - input.getFullYear();
+    var mid = current.getFullYear() - difference/2 |0;
+    var q1 = mid + difference/4 |0;
+    var q3 = mid - difference/4 |0;
+
+    dates[1].setYear(q3);
+    dates[2].setYear(mid);
+    dates[3].setYear(q1);
+    dates[4].setYear(current.getFullYear());
+
+    return dates;
+  }
 
 })();

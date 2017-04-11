@@ -50,7 +50,7 @@
         <button class="btn-link" ng-click="pc.showRawDSData = !pc.showRawDSData">Toggle Raw Data</button>
         <div ng-show="pc.showRawDSData">
           <div ng-controller="darkSky as ds">
-            <pre><code>{{ ds.data | json }}</code></pre>
+            <pre><code>{{ ds.weatherData | json }}</code></pre>
           </div>
         </div>
       </div>
