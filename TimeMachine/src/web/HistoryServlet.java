@@ -2,11 +2,12 @@ package web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.ejb.EJB;
-import javax.json.JsonValue;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,9 +16,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.simple.JSONObject;
 import org.json.simple.JsonObject;
-import org.json.simple.parser.JSONParser;
+import org.json.simple.Jsoner;
 
 import model.HistoryFacade;
 import model.WxHist;
@@ -97,19 +97,12 @@ public class HistoryServlet extends HttpServlet {
 	@SuppressWarnings("deprecation")
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		doGet(request, response);
 		log(request.toString()); log(response.toString());
 		PrintWriter out = response.getWriter();  
 		RequestDispatcher rd=request.getRequestDispatcher("index.html");  
 		response.setContentType("text/html");  
 		
-		JSONParser parser = new JSONParser();
-		try {
-			JSONObject json = (JSONObject) parser.parse(request.getParameter("json"));
-			log("json= " + json.toString());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		JsonObject queryJson = Jsoner.deserialize(request.getReader().readLine(), new JsonObject());
 		
 		List<WxHist> historyList = null;
 
@@ -129,10 +122,17 @@ public class HistoryServlet extends HttpServlet {
 		}
 
 		WxHist history = new WxHist();
-		history.setDate(new Date());
-		history.setTitle("Testing HistoryServlet");
-		history.setLatitude("0");
-		history.setLongitude("0");
+		String date = queryJson.getString("date");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+		try {
+			history.setDate(df.parse(date));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		history.setTitle(queryJson.getString("title"));
+		history.setLatitude(queryJson.getString("latitude"));
+		history.setLongitude(queryJson.getString("longitude"));
 		history.setWxUser(GetUserBean(uid));
 
 		boolean checkAddition = hf.addHistory(history, uid);

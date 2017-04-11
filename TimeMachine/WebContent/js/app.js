@@ -19,6 +19,7 @@
     };
     nc.checkLogin();
     nc.logout = function() {
+      console.log('logout');
       $cookies.remove('TimeMachine_cookie');
       nc.checkLogin();
     };
@@ -95,7 +96,6 @@
     $rootScope.getDarkSkyData = function(queryInfo) {
       //if($rootScope.user.loggedIn) {
       queryInfo.username = $rootScope.user.username || null;
-      console.log(queryInfo);
       $http.post('/TimeMachine/HistoryServlet', queryInfo)
         .then(function success(response) {
           console.log(response);
@@ -105,10 +105,8 @@
       //}
 
       var yearsArray = getYears(queryInfo.date);
-      yearsArray.forEach(date => console.log(date));
       ds.weatherData = [];
       yearsArray.forEach(function(date, index) {
-        console.log(date);
         var url = `https://crossorigin.me/https://api.darksky.net/forecast/472f1ba38a5f3d13407fdb589d975c8c/${queryInfo.latitude},${queryInfo.longitude},${date.toJSON().split('.')[0]}?exclude=minutely,hourly,flags`;
         $http.get(url)
           .then(function success(response) {
