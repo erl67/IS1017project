@@ -48,7 +48,7 @@ public class LoginServlet extends HttpServlet {
 		response.getWriter().println("\n\n\nLoginServletTest\n\n\n");
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 		response.addHeader("SERVLET_STATUS", "ok");
-//		response.setStatus(204);
+//		response.setStatus(200);
 	}
 
 	/**
@@ -98,7 +98,7 @@ public class LoginServlet extends HttpServlet {
 			session.setAttribute(visitCountKey,  visitCount);
 
 			Cookie tmc = new Cookie("TimeMachine_cookie", u.getUserName());
-			Cookie uid = new Cookie("TImeMachine_uid", String.valueOf(u.getId()));
+			Cookie uid = new Cookie("TimeMachine_uid", String.valueOf(u.getId()));
 			tmc.setSecure(useSecureCookie);  // determines whether the cookie should only be sent using a secure protocol, such as HTTPS or SSL
 			tmc.setMaxAge(expiryTime);  // A negative value means that the cookie is not stored persistently and will be deleted when the Web browser exits. A zero value causes the cookie to be deleted.
 			tmc.setPath(cookiePath);  // The cookie is visible to all the pages in the directory you specify, and all the pages in that directory's subdirectories
@@ -115,7 +115,7 @@ public class LoginServlet extends HttpServlet {
 			response.setStatus(200);
 		} else {
 			Cookie tmc = new Cookie("TimeMachine_cookie", "Failed Login");
-			Cookie uid = new Cookie("TImeMachine_uid", "0");
+			Cookie uid = new Cookie("TimeMachine_uid", "0");
 			tmc.setSecure(useSecureCookie);
 			tmc.setMaxAge(expiryTime);	//set to 0 to delete cookie
 			tmc.setPath(cookiePath);

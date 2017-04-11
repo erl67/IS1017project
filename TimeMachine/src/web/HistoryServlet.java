@@ -7,7 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.ejb.EJB;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
@@ -54,7 +53,6 @@ public class HistoryServlet extends HttpServlet {
 		List<WxHist> historyList = GetHistoryBean(uid);
 		
 		String jh = "[";
-		
 		for (WxHist i : historyList) {
 			jh += "\n\t{";
 			jh += "\n\t\"Id\": " + i.getId() +",";
@@ -93,8 +91,7 @@ public class HistoryServlet extends HttpServlet {
 		}
 		
 		String jh = jsonHistory (uid);
-		
-		
+
 //		JsonObject queryJson = Jsoner.deserialize(request.getReader().readLine(), new JsonObject());
 		
 //		String jHistory = historyList.iterator().toString();
@@ -102,9 +99,7 @@ public class HistoryServlet extends HttpServlet {
 //		log ("historyList.toString())=" + historyList.toString());
 		
 //		JsonSerializable jHistory2 = (JsonSerializable) historyList;
-//		log(jHistory2.toString());
-		
-		
+//		log(jHistory2.toString());	
 //		try {
 //			jHistory = Jsoner.serialize(jHistory);
 //			jHistory2 = Jsoner.serialize(jHistory2);
@@ -112,9 +107,7 @@ public class HistoryServlet extends HttpServlet {
 //			String jh = Jsoner.serialize(historyList);
 //			log ("jh= " + jh + "/n" + "jHistory= " + jHistory);
 //		} 
-//		catch (NoClassDefFoundError e) {
-//			e.printStackTrace();
-//		}catch (Exception f) {
+//		} catch (Exception f) {
 //			f.printStackTrace();
 //		}
 
@@ -134,13 +127,7 @@ public class HistoryServlet extends HttpServlet {
 		log(request.toString()); log(response.toString()); 
 		response.setContentType("application/json");  
 
-		
 		JsonObject queryJson = Jsoner.deserialize(request.getReader().readLine(), new JsonObject());
-		
-		final String cookieName = "TimeMachine_history";
-		final Boolean useSecureCookie = false;
-		final int expiryTime = 60 * 60 * 24;  // 24h in seconds
-		final String cookiePath = "/";
 
 		int uid = -1;
 		Cookie[] cookies = request.getCookies();
@@ -166,23 +153,10 @@ public class HistoryServlet extends HttpServlet {
 		boolean checkAddition = hf.addHistory(history, uid);
 
 		if (checkAddition == true) {
-			Cookie tmc = new Cookie(cookieName, "History Added");
-			tmc.setSecure(useSecureCookie);
-			tmc.setMaxAge(expiryTime);
-			tmc.setPath(cookiePath); 
-			response.addCookie(tmc);
 			response.setStatus(200);
-			
 			String jh = jsonHistory(uid);
-			
 			response.getWriter().println(jh);
-
 		} else {
-			Cookie tmc = new Cookie(cookieName, "History Error");
-			tmc.setSecure(useSecureCookie);
-			tmc.setMaxAge(expiryTime);
-			tmc.setPath(cookiePath);
-			response.addCookie(tmc);
 			response.setStatus(500);
 			response.getWriter().println("{ \"error\": \"Query could not be saved to the database\" }");
 		}
