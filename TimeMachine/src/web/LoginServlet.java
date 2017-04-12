@@ -64,7 +64,7 @@ public class LoginServlet extends HttpServlet {
 		RequestDispatcher rd=request.getRequestDispatcher("index.html");  
 		
 		final Boolean useSecureCookie = false;
-		final int expiryTime = 60 * 60 * 1;  // 1h in seconds
+		final int expiryTime = 60 * 60 * 8;  // 1h in seconds
 		final String cookiePath = "/";
 
 		String username = request.getParameter("username");

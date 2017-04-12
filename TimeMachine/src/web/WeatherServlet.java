@@ -3,24 +3,24 @@ package web;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.ejb.EJB;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.json.simple.JsonObject;
-import org.json.simple.Jsonable;
+import org.json.simple.Jsoner;
 
 import model.WeatherFacade;
 
@@ -30,125 +30,100 @@ import model.WeatherFacade;
 @WebServlet({ "/WeatherServlet", "/w" })
 public class WeatherServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
+
+	private final String dsKey = "472f1ba38a5f3d13407fdb589d975c8c/";
+	private final String dsUrl = "https://api.darksky.net/forecast/";
+	private String dsLat = "37.8267";
+	private String dsLon = "-122.4233";
+	private String dsLoc = dsLat + "," + dsLon + ",";
+	private long dsTime = System.currentTimeMillis() / 1000L; //current epoch time
+
 	@EJB
 	WeatherFacade wf;
-	
-    public WeatherServlet() {
-        super();
-    }
+
+	public WeatherServlet() {
+		super();
+	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		log(request.toString()); log(response.toString());
+		response.setContentType("application/json"); 
 		response.getWriter().println("\n\n\nWeatherServletTest\n\n\n");
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		response.getWriter().append("Served at: ").append(request.getContextPath()+"\n\n");
 		response.addHeader("SERVLET_STATUS", "ok");
-//		response.setStatus(204);
+		response.setStatus(200);
+
+		dsTime = System.currentTimeMillis() / 1000L;
+
+		String wx = null;
+		String dsAPI = dsUrl + dsKey + dsLoc + dsTime;
+
+		wx = URLConnectionReader(dsAPI);
+
+		response.getWriter().println("ds URL= " + dsAPI +"\n\nds API json=\n"+ wx);
+		response.addHeader("json", wx);
+		response.setStatus(200);
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	@SuppressWarnings("unused")
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
+
 		log(request.toString()); log(response.toString());
+		response.setContentType("application/json"); 
 
+		JsonObject queryJson = Jsoner.deserialize(request.getReader().readLine(), new JsonObject());
+
+		String date = queryJson.getString("date");
 		
-		JsonObject object;// = Json.createObjectBuilder().build();
-		JsonObject jo = new JsonObject();
-		Jsonable jv;
-//		jv = "test";
-//		
-//		object.put("user", "test");
-//		
-//		try {
-//			JsonParser parser;
-//			JsonObject parse = parser.parse(request.getReader());
-//		} catch (Exception e) {
-//	
-//		}
-//		
-//		JsonObject returnValue;
-//		JsonValue jv = "success";
-//		returnValue.put("user", new JsonValue("sucess"));
-//		returnValue.put("user", "success");
-//		response.getWriter().print(returnValue);
-//		
-		String u = "WeatherServlet for now";
-
-		final String cookieName = "TimeMachine_weatherservlet";
-		final String cookieValue = "This Does Nothing";  // you could assign it some encoded value
-		final Boolean useSecureCookie = false;
-		final int expiryTime = 60 * 60 * 24;  // 24h in seconds
-		final String cookiePath = "/";
-
-		response.setContentType("text/html");  
-		PrintWriter out = response.getWriter();  
-
-		if (u != null) {
-			HttpSession session = request.getSession(true);
-			Date createTime = new Date(session.getCreationTime());
-			Date lastAccessTime = new Date(session.getLastAccessedTime());
-			Integer visitCount = new Integer(0);
-			String visitCountKey = new String("visitCount");
-			String userIDKey = new String(u);
-			String userID = new String(u);
-			if (session.isNew()){
-				session.setAttribute(userIDKey, userID);
-			} else {
-				visitCount = (Integer)session.getAttribute(visitCountKey);
-				visitCount = visitCount + 1;
-				userID = (String)session.getAttribute(userIDKey);
-			}
-			session.setAttribute(visitCountKey,  visitCount);
-
-			Cookie tmc = new Cookie(cookieName, cookieValue);
-			tmc.setSecure(useSecureCookie);
-			tmc.setMaxAge(expiryTime);
-			tmc.setPath(cookiePath); 
-			response.addCookie(tmc);
-
-			RequestDispatcher rd=request.getRequestDispatcher("index.html");  
-			rd.include(request,response);  
-
-		
-		} else {
-
-			Cookie tmc = new Cookie(cookieName, "Weather Servlet No Login");
-			tmc.setSecure(useSecureCookie);
-			tmc.setMaxAge(expiryTime);	//set to 0 to delete cookie
-			tmc.setPath(cookiePath);
-			response.addCookie(tmc);
-
-			out.print("Sorry username or password error");  
-			RequestDispatcher rd=request.getRequestDispatcher("index.html");  
-
-			response.getWriter().print("fail");
-			response.addHeader("WEATHER_STATUS", "OK");
-//			request.setAttribute("user", "");
-
-			rd.include(request,response);  
+//		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+		try {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+			ZonedDateTime zdt = ZonedDateTime.parse(date,dtf);        
+			dsTime = zdt.toInstant().toEpochMilli();
+//			dsTime = df.parse(date).toInstant().toEpochMilli();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
-	}
-	
+		dsLat = queryJson.getString("latitude");
+		dsLon = queryJson.getString("longitude");
+		dsLoc = dsLat + "," + dsLon + ",";
 
-	public static void URLConnectionReader(String urlS) {
+		String dsAPI = dsUrl + dsKey + dsLoc + dsTime;
+		log ("dsAPI= " + dsAPI);
+
+		String wx = URLConnectionReader(dsAPI);
+
+		if (wx.length() > 8) {
+			response.setStatus(200);
+			response.getWriter().println(wx);
+		} else {
+			response.setStatus(500);
+			response.getWriter().println("{ \"error\": \"API call did not complete successfully\" }");
+		}
+	}
+
+	public String URLConnectionReader(String urlS) {
 		URL url;
 		URLConnection yc;
 		String inputLine;
+		String wx = "";
 		try {
 			url = new URL(urlS);
 			yc = url.openConnection();
 
 			try {
 				BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
-				while ((inputLine = in.readLine()) != null) 
-					System.out.println(inputLine);
-				
+				while ((inputLine = in.readLine()) != null) {
+					wx += inputLine;
+					log("inputLine= " + inputLine + " / wx = " + wx);
+				}
 				in.close();
 			}
 			catch (Exception e){
@@ -160,6 +135,7 @@ public class WeatherServlet extends HttpServlet {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return wx;
 	}
 
 }
