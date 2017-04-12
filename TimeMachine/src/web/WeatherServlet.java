@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -36,7 +37,8 @@ public class WeatherServlet extends HttpServlet {
 	private String dsLat = "37.8267";
 	private String dsLon = "-122.4233";
 	private String dsLoc = dsLat + "," + dsLon + ",";
-	private long dsTime = System.currentTimeMillis() / 1000L; //current epoch time
+	private long dsTime = -1L; 
+	private long ut = System.currentTimeMillis() / 1000L; //current epoch time
 
 	@EJB
 	WeatherFacade wf;
@@ -51,12 +53,23 @@ public class WeatherServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		log(request.toString()); log(response.toString());
 		response.setContentType("application/json"); 
-		response.getWriter().println("\n\n\nWeatherServletTest\n\n\n");
+		response.getWriter().println("\n\n\nWeatherServletTest\n\nnow="+ ut +"\n\n");
 		response.getWriter().append("Served at: ").append(request.getContextPath()+"\n\n");
 		response.addHeader("SERVLET_STATUS", "ok");
 		response.setStatus(200);
 
-		dsTime = System.currentTimeMillis() / 1000L;
+		String date = "1916-04-11T16:38:58.393Z";  //format of JSON input for testing
+		try {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+			ZonedDateTime zdt = ZonedDateTime.parse(date,dtf);        
+			dsTime = zdt.toEpochSecond();
+			log("date string=" + date + "dsTime string=" + dsTime);
+			response.getWriter().println("date string=" + date + "\tepoch=" + dsTime + "\n\n");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		dsTime = Long.valueOf(new Date().getTime()/1000L);
 
 		String wx = null;
 		String dsAPI = dsUrl + dsKey + dsLoc + dsTime;
@@ -81,12 +94,10 @@ public class WeatherServlet extends HttpServlet {
 
 		String date = queryJson.getString("date");
 		
-//		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
 		try {
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
 			ZonedDateTime zdt = ZonedDateTime.parse(date,dtf);        
-			dsTime = zdt.toInstant().toEpochMilli();
-//			dsTime = df.parse(date).toInstant().toEpochMilli();
+			dsTime = zdt.toEpochSecond();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

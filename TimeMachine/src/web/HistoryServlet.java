@@ -138,7 +138,7 @@ public class HistoryServlet extends HttpServlet {
 		}
 
 		WxHist history = new WxHist();
-		String date = queryJson.getString("date");
+		String date = queryJson.getString("date"); log("Date=" + date);
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
 		try {
 			history.setDate(df.parse(date));
