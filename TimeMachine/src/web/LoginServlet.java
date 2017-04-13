@@ -50,7 +50,7 @@ public class LoginServlet extends HttpServlet {
 		response.getWriter().println("\n\n\nLoginServletTest\n\n\n");
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 		response.addHeader("SERVLET_STATUS", "ok");
-//		response.setStatus(200);
+		response.setStatus(200);
 	}
 
 	/**
@@ -59,31 +59,25 @@ public class LoginServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		log(request.toString()); log(response.toString());
-		
+
 		response.setContentType("application/json");  
 		PrintWriter out = response.getWriter();  
-		//RequestDispatcher rd=request.getRequestDispatcher("index.html");  
-		
+
 		final Boolean useSecureCookie = false;
 		final int expiryTime = 60 * 60 * 8;  // 1h in seconds
 		final String cookiePath = "/";
-		
+
 		JsonObject loginJson = Jsoner.deserialize(request.getReader().readLine(), new JsonObject());
-		
+
 		String username = loginJson.getString("username");
 		String password = loginJson.getString("password");
-
-		//String username = request.getParameter("username");
-		//String password = request.getParameter("password");
 
 		WxUser u = LoginBean(username, password);
 
 		if (u != null) {
 			// Create a session object if it is already not  created.
 			HttpSession session = request.getSession(true);
-			// Get session creation time.
 			Date createTime = new Date(session.getCreationTime());
-			// Get last access time of this web page.
 			Date lastAccessTime = new Date(session.getLastAccessedTime());
 
 			Integer visitCount = new Integer(0);
@@ -114,33 +108,18 @@ public class LoginServlet extends HttpServlet {
 
 			out.print("{\"success\": true, \"message\": \"Login Success for user: " + u.getUserName() + "\"}");  
 
-			//response.getWriter().print("success");
 			//response.addHeader("LOGIN_STATUS", "SUCCESS");
-			request.setAttribute("user", u);
 			//response.sendRedirect("/TimeMachine/");
+			request.setAttribute("user", u);
 			request.setAttribute("session", session);
 			response.setStatus(200);
 		} else {
-//			Cookie tmc = new Cookie("TimeMachine_cookie", "Failed Login");
-//			Cookie uid = new Cookie("TimeMachine_uid", "0");
-//			tmc.setSecure(useSecureCookie);
-//			tmc.setMaxAge(expiryTime);	//set to 0 to delete cookie
-//			tmc.setPath(cookiePath);
-//			response.addCookie(tmc);
-//			uid.setSecure(useSecureCookie); uid.setMaxAge(expiryTime); uid.setPath(cookiePath);
-//			response.addCookie(tmc); response.addCookie(uid);
-
 			out.print("{\"success\": false, \"message\": \"Username or password is incorrect!\"}");  
-
-			//response.getWriter().print("fail");
-			//response.addHeader("LOGIN_STATUS", "FAILURE");
 			response.setStatus(401);
 			request.setAttribute("user", "");
+			//response.getWriter().print("fail");
+			//response.addHeader("LOGIN_STATUS", "FAILURE");
 			//response.sendRedirect("/TimeMachine/login/");
-
 		}
-		//rd.include(request,response);  
-
 	}
-
 }

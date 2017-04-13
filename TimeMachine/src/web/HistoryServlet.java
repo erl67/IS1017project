@@ -52,21 +52,26 @@ public class HistoryServlet extends HttpServlet {
 		
 		List<WxHist> historyList = GetHistoryBean(uid);
 		
-		String jh = "[";
-		for (WxHist i : historyList) {
-			jh += "\n\t{";
-			jh += "\n\t\"Id\": " + i.getId() +",";
-			jh += "\n\t\"Name\": \""+ i.getWxUser().getUserName()+ "\",";
-			jh += "\n\t\"UID\": " + i.getWxUser().getId() +",";
-			jh += "\n\t\"Title\": \"" + i.getTitle() + "\",";
-			jh += "\n\t\"Date\": \"" + i.getDate() +"\",";
-			jh += "\n\t\"Latitude\": "+ i.getLatitude() + ",";
-			jh += "\n\t\"Longitude\": " + i.getLongitude() + "";
-			jh += "\n\t},";
-			log(jh.toString());		
-		}
-		jh = jh.substring(0, jh.length() - 1); //remove last comma
-		jh += "\n]";
+		
+//		String jh = "[";
+//		for (WxHist i : historyList) {
+//			jh += "\n\t{";
+//			jh += "\n\t\"Id\": " + i.getId() +",";
+//			jh += "\n\t\"Name\": \""+ i.getWxUser().getUserName()+ "\",";
+//			jh += "\n\t\"UID\": " + i.getWxUser().getId() +",";
+//			jh += "\n\t\"Title\": \"" + i.getTitle() + "\",";
+//			jh += "\n\t\"Date\": \"" + i.getDate() +"\",";
+//			jh += "\n\t\"Latitude\": "+ i.getLatitude() + ",";
+//			jh += "\n\t\"Longitude\": " + i.getLongitude() + "";
+//			jh += "\n\t},";
+//			log(jh.toString());		
+//		}
+//		jh = jh.substring(0, jh.length() - 1); //remove last comma
+//		jh += "\n]";
+		
+		
+//		JsonObject qJ = Jsoner.serialize(historyList);
+		String jh = Jsoner.serialize(historyList);
 		
 		return jh;
 	}
@@ -127,8 +132,6 @@ public class HistoryServlet extends HttpServlet {
 		log(request.toString()); log(response.toString()); 
 		response.setContentType("application/json");  
 
-		JsonObject queryJson = Jsoner.deserialize(request.getReader().readLine(), new JsonObject());
-
 		int uid = -1;
 		Cookie[] cookies = request.getCookies();
 		if (cookies != null) {
@@ -137,7 +140,9 @@ public class HistoryServlet extends HttpServlet {
 			}
 		}
 
+		JsonObject queryJson = Jsoner.deserialize(request.getReader().readLine(), new JsonObject());
 		WxHist history = new WxHist();
+		
 		String date = queryJson.getString("date"); log("Date=" + date);
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
 		try {
