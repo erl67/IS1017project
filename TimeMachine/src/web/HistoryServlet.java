@@ -53,25 +53,24 @@ public class HistoryServlet extends HttpServlet {
 		List<WxHist> historyList = GetHistoryBean(uid);
 		
 		
-//		String jh = "[";
-//		for (WxHist i : historyList) {
-//			jh += "\n\t{";
-//			jh += "\n\t\"Id\": " + i.getId() +",";
-//			jh += "\n\t\"Name\": \""+ i.getWxUser().getUserName()+ "\",";
-//			jh += "\n\t\"UID\": " + i.getWxUser().getId() +",";
-//			jh += "\n\t\"Title\": \"" + i.getTitle() + "\",";
-//			jh += "\n\t\"Date\": \"" + i.getDate() +"\",";
-//			jh += "\n\t\"Latitude\": "+ i.getLatitude() + ",";
-//			jh += "\n\t\"Longitude\": " + i.getLongitude() + "";
-//			jh += "\n\t},";
-//			log(jh.toString());		
-//		}
-//		jh = jh.substring(0, jh.length() - 1); //remove last comma
-//		jh += "\n]";
-		
+		String jh = "[";
+		for (WxHist i : historyList) {
+			jh += "\n\t{";
+			jh += "\n\t\"Id\": " + i.getId() +",";
+			jh += "\n\t\"Name\": \""+ i.getWxUser().getUserName()+ "\",";
+			jh += "\n\t\"UID\": " + i.getWxUser().getId() +",";
+			jh += "\n\t\"Title\": \"" + i.getTitle() + "\",";
+			jh += "\n\t\"Date\": \"" + i.getDate() +"\",";
+			jh += "\n\t\"Latitude\": "+ i.getLatitude() + ",";
+			jh += "\n\t\"Longitude\": " + i.getLongitude() + "";
+			jh += "\n\t},";
+			log(jh.toString());		
+		}
+		jh = jh.substring(0, jh.length() - 1); //remove last comma
+		jh += "\n]";
 		
 //		JsonObject qJ = Jsoner.serialize(historyList);
-		String jh = Jsoner.serialize(historyList);
+//		String jh = Jsoner.serialize(historyList);
 		
 		return jh;
 	}
