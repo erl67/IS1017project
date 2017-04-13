@@ -19,8 +19,8 @@
     };
     nc.checkLogin();
     nc.logout = function() {
-      console.log('logout');
-      $cookies.remove('TimeMachine_cookie');
+      $cookies.remove('TimeMachine_cookie', {path: '/'});
+      $cookies.remove('TimeMachine_uid', {path: '/'});
       nc.checkLogin();
     };
   }]);
