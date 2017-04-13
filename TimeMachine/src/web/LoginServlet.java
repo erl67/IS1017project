@@ -5,7 +5,6 @@ import java.io.PrintWriter;
 import java.util.Date;
 
 import javax.ejb.EJB;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
@@ -13,6 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.json.simple.JsonObject;
+import org.json.simple.Jsoner;
 
 import model.UserFacade;
 import model.WxUser;
@@ -56,19 +58,23 @@ public class LoginServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		doGet(request, response);
 		log(request.toString()); log(response.toString());
 		
-		response.setContentType("text/html");  
+		response.setContentType("application/json");  
 		PrintWriter out = response.getWriter();  
-		RequestDispatcher rd=request.getRequestDispatcher("index.html");  
+		//RequestDispatcher rd=request.getRequestDispatcher("index.html");  
 		
 		final Boolean useSecureCookie = false;
 		final int expiryTime = 60 * 60 * 8;  // 1h in seconds
 		final String cookiePath = "/";
+		
+		JsonObject loginJson = Jsoner.deserialize(request.getReader().readLine(), new JsonObject());
+		
+		String username = loginJson.getString("username");
+		String password = loginJson.getString("password");
 
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
+		//String username = request.getParameter("username");
+		//String password = request.getParameter("password");
 
 		WxUser u = LoginBean(username, password);
 
@@ -103,36 +109,37 @@ public class LoginServlet extends HttpServlet {
 			tmc.setMaxAge(expiryTime);  // A negative value means that the cookie is not stored persistently and will be deleted when the Web browser exits. A zero value causes the cookie to be deleted.
 			tmc.setPath(cookiePath);  // The cookie is visible to all the pages in the directory you specify, and all the pages in that directory's subdirectories
 			uid.setSecure(useSecureCookie); uid.setMaxAge(expiryTime); uid.setPath(cookiePath);
-			response.addCookie(tmc); response.addCookie(uid);
+			response.addCookie(tmc);
+			response.addCookie(uid);
 
-			out.print("Login Success for user: " + u);  
+			out.print("{\"success\": true, \"message\": \"Login Success for user: " + u.getUserName() + "\"}");  
 
-			response.getWriter().print("success");
-			response.addHeader("LOGIN_STATUS", "SUCCESS");
+			//response.getWriter().print("success");
+			//response.addHeader("LOGIN_STATUS", "SUCCESS");
 			request.setAttribute("user", u);
-			response.sendRedirect("/TimeMachine/");
+			//response.sendRedirect("/TimeMachine/");
 			request.setAttribute("session", session);
 			response.setStatus(200);
 		} else {
-			Cookie tmc = new Cookie("TimeMachine_cookie", "Failed Login");
-			Cookie uid = new Cookie("TimeMachine_uid", "0");
-			tmc.setSecure(useSecureCookie);
-			tmc.setMaxAge(expiryTime);	//set to 0 to delete cookie
-			tmc.setPath(cookiePath);
-			response.addCookie(tmc);
-			uid.setSecure(useSecureCookie); uid.setMaxAge(expiryTime); uid.setPath(cookiePath);
-			response.addCookie(tmc); response.addCookie(uid);
+//			Cookie tmc = new Cookie("TimeMachine_cookie", "Failed Login");
+//			Cookie uid = new Cookie("TimeMachine_uid", "0");
+//			tmc.setSecure(useSecureCookie);
+//			tmc.setMaxAge(expiryTime);	//set to 0 to delete cookie
+//			tmc.setPath(cookiePath);
+//			response.addCookie(tmc);
+//			uid.setSecure(useSecureCookie); uid.setMaxAge(expiryTime); uid.setPath(cookiePath);
+//			response.addCookie(tmc); response.addCookie(uid);
 
-			out.print("Sorry username or password error");  
+			out.print("{\"success\": false, \"message\": \"Username or password is incorrect!\"}");  
 
-			response.getWriter().print("fail");
-			response.addHeader("LOGIN_STATUS", "FAILURE");
-			response.setStatus(418);
+			//response.getWriter().print("fail");
+			//response.addHeader("LOGIN_STATUS", "FAILURE");
+			response.setStatus(401);
 			request.setAttribute("user", "");
-			response.sendRedirect("/TimeMachine/login/");
+			//response.sendRedirect("/TimeMachine/login/");
 
 		}
-		rd.include(request,response);  
+		//rd.include(request,response);  
 
 	}
 

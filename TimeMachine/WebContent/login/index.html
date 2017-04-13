@@ -22,7 +22,8 @@
       </div>
     </div>
     <div class="container">
-      <h4 class="text-danger"></h4>
+      <div class="alert alert-danger hidden" role="alert" id="errorBanner">
+      </div>
       <form action="/TimeMachine/LoginServlet" method="post">
         <fieldset>
           <div class="form-group <%= error['username'] %>">
@@ -40,5 +41,6 @@
         </div>
       </form>
     </div>
+    <script src="../js/login.js"></script>
   </body>
 </html>
