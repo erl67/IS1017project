@@ -6,15 +6,12 @@ import java.io.PrintWriter;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.simple.JsonObject;
-import org.json.simple.Jsoner;
-
 import model.UserFacade;
+import model.UserManager;
 import model.WxUser;
 
 /**
@@ -55,36 +52,25 @@ public class RegisterServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		log(request.toString()); log(response.toString());
-
-//		response.setContentType("application/json"); 
 		response.setContentType("text/html");  
-		PrintWriter out = response.getWriter();  
+		PrintWriter out = response.getWriter(); 
 		
-		final Boolean useSecureCookie = false;
-		final int expiryTime = 60 * 60 * 8;  // 1h in seconds
-		final String cookiePath = "/";
-		
-		JsonObject loginJson = Jsoner.deserialize(request.getReader().readLine(), new JsonObject());
+//		response.setContentType("application/json"); 
+//		JsonObject loginJson = Jsoner.deserialize(request.getReader().readLine(), new JsonObject());
+//		String username = loginJson.getString("username");
+//		String password = loginJson.getString("password");
 
-		String username = loginJson.getString("username");
-		String password = loginJson.getString("password");
-
-		username = request.getParameter("username");
-		password = request.getParameter("password");
+		String username = request.getParameter("username");
+		String password = request.getParameter("password");
 
 		WxUser u = RegisterBean(username, password);
 
 		if (u != null) {
 
 			out.print("Register Success for user: " + u);  
-
-			Cookie tmc = new Cookie("TimeMachine_cookie", u.getUserName());
-			Cookie uid = new Cookie("TImeMachine_uid", String.valueOf(u.getId()));
-			tmc.setSecure(useSecureCookie); 
-			tmc.setMaxAge(expiryTime); 
-			tmc.setPath(cookiePath);
-			uid.setSecure(useSecureCookie); uid.setMaxAge(expiryTime); uid.setPath(cookiePath);
-			response.addCookie(tmc); response.addCookie(uid);
+			
+			response.addCookie(UserManager.makeCookie ("TimeMachine_cookie", u.getUserName()));
+			response.addCookie(UserManager.makeCookie ("TimeMachine_uid", String.valueOf(u.getId())));
 
 			response.getWriter().print("success");
 			response.addHeader("LOGIN_STATUS", "SUCCESS");
