@@ -1,6 +1,10 @@
 /* global angular: false */
 (function() {
-  var app = angular.module('weatherTM', ['chart.js', 'ngCookies', 'ngSanitize']);
+    var app = angular.module('weatherTM', ['chart.js', 'ngCookies', 'ngSanitize']);
+    var dateLabels = [];
+    var minTempData = [];
+    var maxTempData = [];
+    var dateSummary = [];
 
   app.controller('NavbarController', ['$rootScope', '$cookies', function($rootScope, $cookies) {
     var nc = this;
@@ -111,10 +115,23 @@
         $http.get(url)
           .then(function success(response) {
             ds.weatherData[index] = response.data;
+            
+            // Get dates, minimum temperature, maximum temperature, and summary of weather for each date and store in arrays.
+            // Convert Unix to Epoc
+            var epoc = new Date(0); // The 0 there is the key, which sets the date to the epoch
+            epoc.setUTCSeconds(ds.weatherData[index].daily.data[0].time);
+            var d = epoc.toDateString();
+            dateLabels[index] = d;
+            
+            minTempData[index] = ds.weatherData[index].daily.data[0].temperatureMin;
+            maxTempData[index] = ds.weatherData[index].daily.data[0].temperatureMax;
+            dateSummary[index] = ds.weatherData[index].daily.data[0].summary;
+            
           }, function failure(response) {
             $rootScope.displayError(response.data.error);
           });
       });
+      
     };
   }]);
 
@@ -145,11 +162,12 @@
   });
 
   app.controller('ChartController', function($scope) {
-    $scope.labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-    $scope.series = ['Series A', 'Series B'];
+    $scope.labels = dateLabels;
+    $scope.series = ['Min. Temperature', 'Max. Temperature', 'Summary'];
     $scope.data = [
-       [65, 59, 80, 81, 56, 55, 40],
-       [28, 48, 40, 19, 86, 27, 90]
+       minTempData,
+       maxTempData,
+       dateSummary
     ];
     $scope.onClick = function (points, evt) {
       console.log(points, evt);
