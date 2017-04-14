@@ -22,15 +22,14 @@
       </div>
     </div>
     <div class="container">
-      <div class="alert alert-danger hidden" role="alert" id="errorBanner">
-      </div>
-      <form action="/TimeMachine/LoginServlet" method="post">
+      <div class="alert alert-danger hidden" role="alert" id="errorBanner"></div>
+      <form>
         <fieldset>
-          <div class="form-group <%= error['username'] %>">
+          <div class="form-group">
             <label for="username">Username</label>
             <input type="text" class="form-control" autofocus placeholder="username" name="username" autocomplete="username" required="true">
           </div>
-          <div class="form-group <%= error['password'] %>">
+          <div class="form-group">
             <label for="password">Password</label>
             <input type="password" class="form-control" placeholder="password" name="password" autocomplete="current-password" required="true">
           </div>
