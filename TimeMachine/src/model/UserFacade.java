@@ -77,7 +77,6 @@ public class UserFacade {
 	}
 	
 
-
 	public String checkLogin2 (String user, String pass) {
 
 		Connection con = null;

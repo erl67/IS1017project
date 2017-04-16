@@ -25,6 +25,10 @@ import model.WxUser;
 /**
  * Servlet implementation class HistoryServlet
  */
+/**
+ * @author E
+ *
+ */
 @WebServlet({ "/HistoryServlet", "/h" })
 public class HistoryServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -48,33 +52,19 @@ public class HistoryServlet extends HttpServlet {
 		System.out.println("GetUser Bean, u="+uid);
 		return hf.getHistory(uid);
 	}
-	
+
+	/**
+	 * @param uid
+	 * @return String of JSON history
+	 */
 	public String jsonHistory (int uid) {
-		
-		List<WxHist> historyList = GetHistoryBean(uid);
-		
-		//manual JSON creation
-//		String jh = "[";
-//		for (WxHist i : historyList) {
-//			jh += "\n\t{";
-//			jh += "\n\t\"Id\": " + i.getId() +",";
-//			jh += "\n\t\"Name\": \""+ i.getWxUser().getUserName()+ "\",";
-//			jh += "\n\t\"UID\": " + i.getWxUser().getId() +",";
-//			jh += "\n\t\"Title\": \"" + i.getTitle() + "\",";
-//			jh += "\n\t\"Date\": \"" + i.getDate() +"\",";
-//			jh += "\n\t\"Latitude\": "+ i.getLatitude() + ",";
-//			jh += "\n\t\"Longitude\": " + i.getLongitude() + "";
-//			jh += "\n\t},";
-//			log(jh.toString());		
-//		}
-//		jh = jh.substring(0, jh.length() - 1); //remove last comma
-//		jh += "\n]";
-		
-		//real JSON array built
-		JsonObject jo = new JsonObject();
-		JsonArray ja = new JsonArray();
-		
+
+		List<WxHist> historyList = GetHistoryBean(uid);		//List of history data from database based on logged-in user
+		JsonArray ja = new JsonArray();		//Json array to store info from List
+
+		//iterate through List adding each item to a new JsonObject, then store the object in Array at end
 		for (WxHist i : historyList) {
+			JsonObject jo = new JsonObject();
 			jo.put("Id", i.getId());
 			jo.put("Name", i.getWxUser().getUserName());
 			jo.put("UID", i.getWxUser().getId());
@@ -82,14 +72,40 @@ public class HistoryServlet extends HttpServlet {
 			jo.put("Date", i.getDate().toString());
 			jo.put("Latitude", i.getLatitude());
 			jo.put("Longitude", i.getLongitude());
+			log("Json Object="+ jo.toJson());
+			//log("\njo="+jo.toString());		
 			ja.add(jo);
 		}
-		log("\njo="+jo.toString() + "\nja=" + ja.toJson());		
+		log("\nja=" + ja.toJson());		
 
-//		return jh;
-		return ja.toJson();
+		return ja.toJson();	//return JsonArray as Json, can also be returned using .toString() but that excludes the quotation marks
 	}
-	
+
+	/**
+	 * @param uid
+	 * @return String (Manually created JSON)
+	 * This method is a backup to created prior simple JSON method
+	 */
+	public String jsonHistoryManual (int uid) {
+		List<WxHist> historyList = GetHistoryBean(uid);
+		String jh = "[";
+		for (WxHist i : historyList) {
+			jh += "\n\t{";
+			jh += "\n\t\"Id\": " + i.getId() +",";
+			jh += "\n\t\"Name\": \""+ i.getWxUser().getUserName()+ "\",";
+			jh += "\n\t\"UID\": " + i.getWxUser().getId() +",";
+			jh += "\n\t\"Title\": \"" + i.getTitle() + "\",";
+			jh += "\n\t\"Date\": \"" + i.getDate() +"\",";
+			jh += "\n\t\"Latitude\": "+ i.getLatitude() + ",";
+			jh += "\n\t\"Longitude\": " + i.getLongitude() + "";
+			jh += "\n\t},";	
+		}
+		jh = jh.substring(0, jh.length() - 1); //remove last comma
+		jh += "\n]";
+		log(jh.toString());	
+		return jh;
+	}
+
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -100,13 +116,17 @@ public class HistoryServlet extends HttpServlet {
 		response.getWriter().println("\n\n\nHistoryServletTest\n\n\n");
 		response.getWriter().append("Served at: ").append(request.getContextPath() + "\n\n\n");
 		response.addHeader("SERVLET_STATUS", "ok");
-		
+
 		int uid = UserManager.checkUidCookie (request.getCookies());
 
-		//generate json of historical records in database
+		//generate json of historical records in database using simple-json
 		String jh = jsonHistory (uid);
-		
-		response.getWriter().println("jh manual json=\n"+ jh);
+		response.getWriter().println("json-simple object=\n"+ jh);
+
+		//generate json of historical records with manual json
+		//String jm = jsonHistoryManual (uid); 
+		//response.getWriter().println("\n\n\njsonHistoryManual=\n"+ jm);
+
 		response.addHeader("json", jh);
 		response.setStatus(200);
 	}
@@ -124,7 +144,7 @@ public class HistoryServlet extends HttpServlet {
 
 		JsonObject queryJson = Jsoner.deserialize(request.getReader().readLine(), new JsonObject());
 		WxHist history = new WxHist();
-		
+
 		String date = queryJson.getString("date"); log("Date=" + date);
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
 		try {

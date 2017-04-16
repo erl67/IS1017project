@@ -30,7 +30,7 @@ public class HistoryFacade {
 			q.setParameter("id", user);
 			System.out.println(q.toString());
 			results = q.getResultList();
-			for (WxHist i : results) System.out.println(i.getId() + " " + i.getWxUser() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude());
+			for (WxHist i : results) System.out.println("hf.gH: "+i.getId() + " " + i.getWxUser() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude());
 			return results;
 		}
 		catch (NoResultException d) {
@@ -67,7 +67,7 @@ public class HistoryFacade {
 	
 	/**
 	 * @param uid
-	 * @return WxUser Object
+	 * @return WxUser Object based on uid
 	 * This method is similar to the code: WxUser user = em.find(WxUser.class, uid);
 	 */
 	public WxUser getUser (int uid) {
@@ -77,7 +77,7 @@ public class HistoryFacade {
 //			q.setParameter("uid", uid);
 //			WxUser userResult = (WxUser) q.getSingleResult();
 			WxUser userResult = em.find(WxUser.class, uid);
-			System.out.println(userResult.getId() + " " + userResult.getUserName());
+			System.out.println("hf.gU: " + userResult.getId() + " " + userResult.getUserName());
 			return userResult;
 		}
 		catch (NoResultException d) {
