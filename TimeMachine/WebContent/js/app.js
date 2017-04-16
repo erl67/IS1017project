@@ -7,6 +7,7 @@
   var currentSummaryData = [];
   var minTempData = [];
   var dateSummary = [];
+  var searchTime;
 
   app.controller('NavbarController', ['$rootScope', '$cookies', function($rootScope, $cookies) {
     var nc = this;
@@ -111,6 +112,8 @@
       //}
 
       var yearsArray = getYears(queryInfo.date);
+      searchTime = queryInfo.date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+ 
       ds.weatherData = [];
       yearsArray.forEach(function(date, index) {
         var url = `https://crossorigin.me/https://api.darksky.net/forecast/472f1ba38a5f3d13407fdb589d975c8c/${queryInfo.latitude},${queryInfo.longitude},${JSON.stringify(Math.round(date.getTime()/1000))}?exclude=minutely,hourly,flags`;
@@ -194,8 +197,10 @@
                             dataset._meta[key].data.forEach(function(point){
                                 if (point._index == 0) {
                                     pointXBuffer = 35;
+                                } else if (point._index > 0 && point._index < 4) {
+                                    pointXBuffer = 35;
                                 } else if (point._index == 4) {
-                                    pointXBuffer = -40;
+                                    pointXBuffer = -35;
                                 }
                                 if (dataset.data[point._index] == Math.max.apply(Math, maxTempData)){
                                     ctx.font = "15px Monaco";
@@ -216,8 +221,10 @@
                             dataset._meta[key].data.forEach(function(point){
                                 if (point._index == 0) {
                                     pointXBuffer = 35;
+                                } else if (point._index > 0 && point._index < 4) {
+                                    pointXBuffer = -35;
                                 } else if (point._index == 4) {
-                                    pointXBuffer = -40;
+                                    pointXBuffer = -35;
                                 }
                                 if (dataset.data[point._index] == Math.min.apply(Math, minTempData)){
                                     ctx.font = "15px Monaco";
@@ -239,7 +246,11 @@
                                 if (point._index == 0) {
                                     pointXBuffer = 35;
                                 } else if (point._index == 4) {
-                                    pointXBuffer = -40;
+                                    pointXBuffer = -35;
+                                    ctx.shadowBlur=0;
+                                    ctx.font = "8px Monaco";
+                                    ctx.fillStyle="#848484";
+                                    ctx.fillText(searchTime, point._view.x + pointXBuffer + 65, point._view.y);
                                 }
                                 ctx.shadowBlur=0;
                                 ctx.font = "15px Monaco";
@@ -258,7 +269,6 @@
 
   function getYears(input) {
     var current = new Date();
-    console.log(current);
     var dates = [];
 
     for(var i = 0; i < 5; i++) {
