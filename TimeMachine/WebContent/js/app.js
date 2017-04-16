@@ -122,16 +122,16 @@
             epoc.setUTCSeconds(ds.weatherData[index].daily.data[0].time);
             var d = epoc.toDateString();
             dateLabels[index] = d;
-
-            minTempData[index] = ds.weatherData[index].daily.data[0].temperatureMin;
+            
             maxTempData[index] = ds.weatherData[index].daily.data[0].temperatureMax;
+            minTempData[index] = ds.weatherData[index].daily.data[0].temperatureMin;
+            
             dateSummary[index] = ds.weatherData[index].daily.data[0].summary;
 
           }, function failure(response) {
             $rootScope.displayError(response.data.error);
           });
       });
-
     };
   }]);
 
@@ -165,14 +165,40 @@
 
   app.controller('ChartController', function($scope) {
     $scope.labels = dateLabels;
-    $scope.series = ['Min. Temperature', 'Max. Temperature', 'Summary'];
+    $scope.series = ['Max. Temperature', 'Min. Temperature', 'Summary'];
     $scope.data = [
-      minTempData,
       maxTempData,
+      minTempData,
       dateSummary
     ];
     $scope.onClick = function (points, evt) {
       console.log(points, evt);
+    };
+    $scope.options = {
+        animation: {
+            onComplete: function() {
+                var ctx = this.chart.ctx;
+                ctx.textAlign = "center";
+                ctx.textBaseline = "bottom";
+                
+                this.chart.config.data.datasets.forEach(function(dataset) {                    
+                    for (var key in dataset._meta) {
+                        
+                        // For Max. Temperature Data
+                        if (dataset.label == 'Max. Temperature') {
+                            dataset._meta[key].data.forEach(function(point){
+                                if (dataset.data[point._index] == Math.max.apply(Math, maxTempData)){
+                                    ctx.fillStyle="#FF0000";
+                                    ctx.fillText(dataset.data[point._index], point._view.x, point._view.y + 20);
+                                    console.log(point);
+                                }
+                            });
+                        }
+                        break;
+                    }
+                })
+           }
+    }
     };
   });
 
