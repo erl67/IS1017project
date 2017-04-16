@@ -1,0 +1,12 @@
+<section>
+  <div ng-hide="user.loggedIn">
+    <div class="alert alert-dismissible alert-success">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      Want to see your previous searches here? <a href="./login/">Sign in</a> or <a href="./register">create an account</a>!
+    </div>
+  </div>
+
+  <div ng-show="user.loggedIn">
+    <pre><code>{{ userHistory | json }}</code></pre>
+  </div>
+</section>

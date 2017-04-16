@@ -18,6 +18,14 @@
     };
   });
 
+  app.directive('myHistory', function() {
+    return {
+      restrict: 'E',
+      controller: 'MyHistoryController as mhc',
+      templateUrl: 'directives/myhistory.html'
+    };
+  });
+
   app.directive('historicalEvents', function() {
     return {
       restrict: 'E',

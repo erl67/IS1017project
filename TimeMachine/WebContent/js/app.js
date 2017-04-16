@@ -113,7 +113,7 @@
 
       var yearsArray = getYears(queryInfo.date);
       searchTime = queryInfo.date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
- 
+
       ds.weatherData = [];
       yearsArray.forEach(function(date, index) {
         var url = `https://crossorigin.me/https://api.darksky.net/forecast/472f1ba38a5f3d13407fdb589d975c8c/${queryInfo.latitude},${queryInfo.longitude},${JSON.stringify(Math.round(date.getTime()/1000))}?exclude=minutely,hourly,flags`;
@@ -125,10 +125,10 @@
             // Convert Unix to Epoc
             var epoc = new Date(0); // The 0 there is the key, which sets the date to the epoch
             epoc.setUTCSeconds(ds.weatherData[index].daily.data[0].time);
-            
+
             var d = epoc.toDateString();
             dateLabels[index] = d;
-            
+
             maxTempData[index] = ds.weatherData[index].daily.data[0].temperatureMax;
             currentTempData[index] = ds.weatherData[index].currently.temperature;
             currentSummaryData[index] = ds.weatherData[index].currently.summary;
@@ -145,6 +145,20 @@
   app.controller('DisplayController', function() {
     var dc = this;
     dc.dataPoints = [];
+  });
+
+  app.controller('MyHistoryController', function($rootScope, $http) {
+    var myc = this;
+    myc.getUserHistory = function() {
+      $http.get('./HistoryServlet')
+        .then(function success(response) {
+          $rootScope.userHistory = response.data;
+        }, function error(response) {
+          $rootScope.displayError('Error getting your past searches');
+          console.log(response);
+        });
+    };
+    myc.getUserHistory();
   });
 
   app.controller('HistoryController', function($rootScope, $http) {
@@ -188,8 +202,8 @@
                 var ctx = this.chart.ctx;
                 ctx.textAlign = "center";
                 ctx.textBaseline = "bottom";
-                
-                this.chart.config.data.datasets.forEach(function(dataset) {                    
+
+                this.chart.config.data.datasets.forEach(function(dataset) {
                     for (var key in dataset._meta) {
                         var pointXBuffer = 0;
                         if (dataset.label == 'Max. Temperature') {
@@ -207,7 +221,7 @@
                                     ctx.fillStyle="#FF0000";
                                     ctx.shadowBlur=50;
                                     ctx.shadowColor="pink";
-                                    ctx.fillText(dataset.data[point._index] + " ℉", point._view.x + pointXBuffer, point._view.y);                 
+                                    ctx.fillText(dataset.data[point._index] + " ℉", point._view.x + pointXBuffer, point._view.y);
                                 } else {
                                     ctx.shadowBlur=0;
                                     ctx.font = "15px Monaco";
@@ -231,7 +245,7 @@
                                     ctx.fillStyle="blue";
                                     ctx.shadowBlur=50;
                                     ctx.shadowColor="#7979ff";
-                                    ctx.fillText(dataset.data[point._index] + " ℉", point._view.x + pointXBuffer, point._view.y);                                
+                                    ctx.fillText(dataset.data[point._index] + " ℉", point._view.x + pointXBuffer, point._view.y);
                                 } else {
                                     ctx.shadowBlur=0;
                                     ctx.font = "15px Monaco";
