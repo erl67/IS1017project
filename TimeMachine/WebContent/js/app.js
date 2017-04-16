@@ -214,6 +214,7 @@
                 this.chart.config.data.datasets.forEach(function(dataset) {
                     for (var key in dataset._meta) {
                         var pointXBuffer = 0;
+                        var pointYBuffer = 0;
                         if (dataset.label == 'Max. Temperature') {
                             // For Max. Temperature Data
                             dataset._meta[key].data.forEach(function(point){
@@ -225,7 +226,7 @@
                                     pointXBuffer = -35;
                                 }
                                 if (dataset.data[point._index] == Math.max.apply(Math, maxTempData)){
-                                    ctx.font = "15px Monaco";
+                                    ctx.font = "2vmin Monaco";
                                     ctx.fillStyle="#FF0000";
                                     ctx.fillText(dataset.data[point._index] + " ℉", point._view.x + pointXBuffer, point._view.y);
                                 } else {
@@ -246,11 +247,10 @@
                                     pointXBuffer = -35;
                                 }
                                 if (dataset.data[point._index] == Math.min.apply(Math, minTempData)){
-                                    ctx.font = "15px Monaco";
+                                    ctx.font = "2vmin Monaco";
                                     ctx.fillStyle="blue";
                                     ctx.fillText(dataset.data[point._index] + " ℉", point._view.x + pointXBuffer, point._view.y);
                                 } else {
-//                                    
 //                                    ctx.font = "15px Monaco";
 //                                    ctx.fillStyle="#848484";
 //                                    ctx.fillText(dataset.data[point._index] + " ℉", point._view.x + pointXBuffer, point._view.y);
@@ -261,6 +261,13 @@
                             // For Search Time Temperature Data
                             dataset._meta[key].data.forEach(function(point){
                                 if (point._index == 0) {
+                                    var a = dataset.data[point._index];
+                                    var b = dataset.data[point._index + 1];
+                                    var difference = Math.abs(a - b);
+                                    if (difference < 5) {
+                                        pointYBuffer = 20;
+                                    }
+                                    console.log(difference);
                                     pointXBuffer = 35;
                                 } else if (point._index > 0 && point._index < 4) {
                                     pointXBuffer = -35;
@@ -270,10 +277,11 @@
                                     ctx.fillStyle="#848484";
                                     ctx.fillText(searchTime, point._view.x + pointXBuffer + 65, point._view.y);
                                 }
-                                ctx.font = "15px Monaco";
+                                ctx.font = "2vmin Monaco";
                                 ctx.fillStyle="#3c3c3c";
-                                ctx.fillText(dataset.data[point._index] + " ℉", point._view.x + pointXBuffer, point._view.y);
+                                ctx.fillText(dataset.data[point._index] + " ℉", point._view.x + pointXBuffer, point._view.y + pointYBuffer);
                                 pointXBuffer = 0;
+                                pointYBuffer = 0;
                             });
                         }
                         break;
