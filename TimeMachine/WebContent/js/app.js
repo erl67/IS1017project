@@ -1,6 +1,14 @@
 /* global angular: false */
 (function() {
   var app = angular.module('weatherTM', ['chart.js', 'ngCookies', 'ngSanitize']);
+
+  app.config(['ChartJsProvider', function (ChartJsProvider) {
+    // Configure all charts
+    ChartJsProvider.setOptions({
+      chartColors: ['#ffff00', '#00e2ff', '#7e44ff'],
+    });
+  }])
+    
   var dateLabels = [];
   var maxTempData = [];
   var currentTempData = [];
@@ -125,8 +133,8 @@
             // Convert Unix to Epoc
             var epoc = new Date(0); // The 0 there is the key, which sets the date to the epoch
             epoc.setUTCSeconds(ds.weatherData[index].daily.data[0].time);
-
             var d = epoc.toDateString();
+//            var lbl = d.split(' ')[0] + d.split(' ')[3];
             dateLabels[index] = d;
 
             maxTempData[index] = ds.weatherData[index].daily.data[0].temperatureMax;
@@ -219,14 +227,11 @@
                                 if (dataset.data[point._index] == Math.max.apply(Math, maxTempData)){
                                     ctx.font = "15px Monaco";
                                     ctx.fillStyle="#FF0000";
-                                    ctx.shadowBlur=50;
-                                    ctx.shadowColor="pink";
                                     ctx.fillText(dataset.data[point._index] + " ℉", point._view.x + pointXBuffer, point._view.y);
                                 } else {
-                                    ctx.shadowBlur=0;
-                                    ctx.font = "15px Monaco";
-                                    ctx.fillStyle="#848484";
-                                    ctx.fillText(dataset.data[point._index] + " ℉", point._view.x + pointXBuffer, point._view.y);
+//                                    ctx.font = "15px Monaco";
+//                                    ctx.fillStyle="#848484";
+//                                    ctx.fillText(dataset.data[point._index] + " ℉", point._view.x + pointXBuffer, point._view.y);
                                 }
                                 pointXBuffer = 0;
                             });
@@ -236,21 +241,19 @@
                                 if (point._index == 0) {
                                     pointXBuffer = 35;
                                 } else if (point._index > 0 && point._index < 4) {
-                                    pointXBuffer = -35;
+                                    pointXBuffer = 35;
                                 } else if (point._index == 4) {
                                     pointXBuffer = -35;
                                 }
                                 if (dataset.data[point._index] == Math.min.apply(Math, minTempData)){
                                     ctx.font = "15px Monaco";
                                     ctx.fillStyle="blue";
-                                    ctx.shadowBlur=50;
-                                    ctx.shadowColor="#7979ff";
                                     ctx.fillText(dataset.data[point._index] + " ℉", point._view.x + pointXBuffer, point._view.y);
                                 } else {
-                                    ctx.shadowBlur=0;
-                                    ctx.font = "15px Monaco";
-                                    ctx.fillStyle="#848484";
-                                    ctx.fillText(dataset.data[point._index] + " ℉", point._view.x + pointXBuffer, point._view.y);
+//                                    
+//                                    ctx.font = "15px Monaco";
+//                                    ctx.fillStyle="#848484";
+//                                    ctx.fillText(dataset.data[point._index] + " ℉", point._view.x + pointXBuffer, point._view.y);
                                 }
                                 pointXBuffer = 0;
                             });
@@ -259,14 +262,14 @@
                             dataset._meta[key].data.forEach(function(point){
                                 if (point._index == 0) {
                                     pointXBuffer = 35;
+                                } else if (point._index > 0 && point._index < 4) {
+                                    pointXBuffer = -35;
                                 } else if (point._index == 4) {
                                     pointXBuffer = -35;
-                                    ctx.shadowBlur=0;
                                     ctx.font = "8px Monaco";
                                     ctx.fillStyle="#848484";
                                     ctx.fillText(searchTime, point._view.x + pointXBuffer + 65, point._view.y);
                                 }
-                                ctx.shadowBlur=0;
                                 ctx.font = "15px Monaco";
                                 ctx.fillStyle="#3c3c3c";
                                 ctx.fillText(dataset.data[point._index] + " ℉", point._view.x + pointXBuffer, point._view.y);
