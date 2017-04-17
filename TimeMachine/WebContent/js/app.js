@@ -154,7 +154,7 @@
     myc.getUserHistory();
   }]);
 
-  app.controller('HistoryController', ['$rootScope', '$scope', function($rootScope, $http) {
+  app.controller('HistoryController', ['$rootScope', '$http', function($rootScope, $http) {
     var hc = this;
     $rootScope.getHistory = function(date) {
       if(!date) {
