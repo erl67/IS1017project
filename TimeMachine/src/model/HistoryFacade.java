@@ -30,7 +30,7 @@ public class HistoryFacade {
 			q.setParameter("id", user);
 			System.out.println(q.toString());
 			results = q.getResultList();
-			for (WxHist i : results) System.out.println("hf.gH: "+i.getId() + " " + i.getWxUser() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude());
+			//for (WxHist i : results) System.out.println("hf.gH: "+i.getId() + " " + i.getWxUser() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude());
 			return results;
 		}
 		catch (NoResultException d) {
@@ -73,11 +73,11 @@ public class HistoryFacade {
 	public WxUser getUser (int uid) {
 		
 		try {
-//			Query q = em.createQuery("SELECT u FROM WxUser u WHERE (u.id= :uid)");
-//			q.setParameter("uid", uid);
-//			WxUser userResult = (WxUser) q.getSingleResult();
+			//Query q = em.createQuery("SELECT u FROM WxUser u WHERE (u.id= :uid)");
+			//q.setParameter("uid", uid);
+			//WxUser userResult = (WxUser) q.getSingleResult();
 			WxUser userResult = em.find(WxUser.class, uid);
-			System.out.println("hf.gU: " + userResult.getId() + " " + userResult.getUserName());
+			//System.out.println("hf.gU: " + userResult.getId() + " " + userResult.getUserName());
 			return userResult;
 		}
 		catch (NoResultException d) {

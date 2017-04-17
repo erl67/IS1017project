@@ -44,12 +44,12 @@ public class HistoryServlet extends HttpServlet {
 	}
 
 	public WxUser GetUserBean (int uid){
-		System.out.println("GetUser Bean, u="+uid);
+		System.out.println("GetUser Bean, user="+uid);
 		return hf.getUser(uid);
 	}
 
 	public List<WxHist> GetHistoryBean (int uid){
-		System.out.println("GetUser Bean, u="+uid);
+		System.out.println("GetHistory Bean, user="+uid);
 		return hf.getHistory(uid);
 	}
 
@@ -72,11 +72,10 @@ public class HistoryServlet extends HttpServlet {
 			jo.put("Date", i.getDate().toString());
 			jo.put("Latitude", i.getLatitude());
 			jo.put("Longitude", i.getLongitude());
-			log("Json Object="+ jo.toJson());
-			//log("\njo="+jo.toString());		
+			//log("Json Object="+ jo.toJson());
 			ja.add(jo);
 		}
-		log("\nja=" + ja.toJson());		
+		//log("\nja=" + ja.toJson());		
 
 		return ja.toJson();	//return JsonArray as Json, can also be returned using .toString() but that excludes the quotation marks
 	}

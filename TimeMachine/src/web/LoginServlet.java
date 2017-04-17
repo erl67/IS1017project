@@ -92,8 +92,11 @@ public class LoginServlet extends HttpServlet {
 			}
 			session.setAttribute(visitCountKey,  visitCount);
 			
-			response.addCookie(UserManager.makeCookie ("TimeMachine_cookie", u.getUserName()));
-			response.addCookie(UserManager.makeCookie ("TimeMachine_uid", String.valueOf(u.getId())));
+//			String domain = request.getServerName() + ":" + request.getServerPort();
+			String domain = request.getServerName();
+			log("\n\nDomain=" + domain + "\n\n");
+			response.addCookie(UserManager.makeCookie ("TimeMachine_cookie", u.getUserName(), domain));
+			response.addCookie(UserManager.makeCookie ("TimeMachine_uid", String.valueOf(u.getId()), domain));
 
 			out.print("{\"success\": true, \"message\": \"Login Success for user: " + u.getUserName() + "\"}");  
 
