@@ -25,3 +25,6 @@
 .alert > a:hover {
   text-decoration: underline;
 }
+#DSLogo {
+  width: 7em;
+}

@@ -103,10 +103,7 @@
         $rootScope.displayError('Geolocation is not supported by your browser. Please type in a location.');
       }
     };
-  }]);
 
-  app.controller('darkSky', ['$http', '$rootScope', function($http, $rootScope) {
-    var ds = this;
     $rootScope.getDarkSkyData = function(queryInfo) {
       //if($rootScope.user.loggedIn) {
       queryInfo.username = $rootScope.user.username || null;
@@ -121,26 +118,26 @@
       var yearsArray = getYears(queryInfo.date);
       searchTime = queryInfo.date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
-      ds.weatherData = [];
+      ic.weatherData = [];
       yearsArray.forEach(function(date, index) {
         var url = `https://crossorigin.me/https://api.darksky.net/forecast/472f1ba38a5f3d13407fdb589d975c8c/${queryInfo.latitude},${queryInfo.longitude},${JSON.stringify(Math.round(date.getTime()/1000))}?exclude=minutely,hourly,flags`;
         $http.get(url)
           .then(function success(response) {
-            ds.weatherData[index] = response.data;
+            ic.weatherData[index] = response.data;
 
             // Get dates, minimum temperature, maximum temperature, and summary of weather for each date and store in arrays.
             // Convert Unix to Epoc
             var epoc = new Date(0); // The 0 there is the key, which sets the date to the epoch
-            epoc.setUTCSeconds(ds.weatherData[index].daily.data[0].time);
+            epoc.setUTCSeconds(ic.weatherData[index].daily.data[0].time);
             var d = epoc.toDateString();
 //            var lbl = d.split(' ')[0] + d.split(' ')[3];
             dateLabels[index] = d;
 
-            maxTempData[index] = ds.weatherData[index].daily.data[0].temperatureMax;
-            currentTempData[index] = ds.weatherData[index].currently.temperature;
-            currentSummaryData[index] = ds.weatherData[index].currently.summary;
-            minTempData[index] = ds.weatherData[index].daily.data[0].temperatureMin;
-            dateSummary[index] = ds.weatherData[index].daily.data[0].summary;
+            maxTempData[index] = ic.weatherData[index].daily.data[0].temperatureMax;
+            currentTempData[index] = ic.weatherData[index].currently.temperature;
+            currentSummaryData[index] = ic.weatherData[index].currently.summary;
+            minTempData[index] = ic.weatherData[index].daily.data[0].temperatureMin;
+            dateSummary[index] = ic.weatherData[index].daily.data[0].summary;
 
           }, function failure(response) {
             $rootScope.displayError(response.data.error);
@@ -148,11 +145,6 @@
       });
     };
   }]);
-
-  app.controller('DisplayController', function() {
-    var dc = this;
-    dc.dataPoints = [];
-  });
 
   app.controller('MyHistoryController', function($rootScope, $http) {
     var myc = this;
