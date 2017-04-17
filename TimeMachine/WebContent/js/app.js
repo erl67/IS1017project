@@ -2,12 +2,12 @@
 (function() {
   var app = angular.module('weatherTM', ['chart.js', 'ngCookies', 'ngSanitize']);
 
-  app.config(['ChartJsProvider', function (ChartJsProvider) {
+  app.config(['ChartJsProvider', function(ChartJsProvider) {
     // Configure all charts
     ChartJsProvider.setOptions({
       chartColors: ['#ffff00', '#00e2ff', '#7e44ff'],
     });
-  }])
+  }]);
 
   var dateLabels = [];
   var maxTempData = [];
@@ -40,7 +40,7 @@
     };
   }]);
 
-  app.controller('PanelController', function($scope) {
+  app.controller('PanelController', ['$scope', function($scope) {
     $scope.panel = 1;
     this.currentPanel = function(input) {
       return $scope.panel === input;
@@ -48,7 +48,7 @@
     $scope.setPanel = function(input) {
       $scope.panel = input;
     };
-  });
+  }]);
 
   app.controller('ErrorController', ['$rootScope', function($rootScope) {
     var error = this;
@@ -116,7 +116,7 @@
       //}
 
       var yearsArray = getYears(queryInfo.date);
-      searchTime = queryInfo.date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      searchTime = queryInfo.date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
 
       ic.weatherData = [];
       yearsArray.forEach(function(date, index) {
@@ -124,15 +124,8 @@
         $http.get(url)
           .then(function success(response) {
             ic.weatherData[index] = response.data;
-
             // Get dates, minimum temperature, maximum temperature, and summary of weather for each date and store in arrays.
-            // Convert Unix to Epoc
-            var epoc = new Date(0); // The 0 there is the key, which sets the date to the epoch
-            epoc.setUTCSeconds(ic.weatherData[index].daily.data[0].time);
-            var d = epoc.toDateString();
-//            var lbl = d.split(' ')[0] + d.split(' ')[3];
-            dateLabels[index] = d;
-
+            dateLabels[index] = date.toLocaleDateString();
             maxTempData[index] = ic.weatherData[index].daily.data[0].temperatureMax;
             currentTempData[index] = ic.weatherData[index].currently.temperature;
             currentSummaryData[index] = ic.weatherData[index].currently.summary;
@@ -146,7 +139,7 @@
     };
   }]);
 
-  app.controller('MyHistoryController', function($rootScope, $http) {
+  app.controller('MyHistoryController', ['$rootScope', '$http', function($rootScope, $http) {
     var myc = this;
     myc.getUserHistory = function() {
       $http.get('./HistoryServlet')
@@ -159,9 +152,9 @@
         });
     };
     myc.getUserHistory();
-  });
+  }]);
 
-  app.controller('HistoryController', function($rootScope, $http) {
+  app.controller('HistoryController', ['$rootScope', '$scope', function($rootScope, $http) {
     var hc = this;
     $rootScope.getHistory = function(date) {
       if(!date) {
@@ -182,9 +175,9 @@
           $rootScope.displayError('Cannot fetch historical events');
         });
     };
-  });
+  }]);
 
-  app.controller('ChartController', function($scope) {
+  app.controller('ChartController', ['$scope', function($scope) {
     $scope.labels = dateLabels;
     $scope.series = ['Max. Temperature', 'Search Time Temperature', 'Min. Temperature', 'Summary'];
     $scope.data = [
@@ -193,96 +186,96 @@
       minTempData,
       dateSummary
     ];
-    $scope.onClick = function (points, evt) {
+    $scope.onClick = function(points, evt) {
       console.log(points, evt);
     };
     $scope.options = {
-        animation: {
-            onComplete: function() {
-                var ctx = this.chart.ctx;
-                ctx.textAlign = "center";
-                ctx.textBaseline = "bottom";
+      animation: {
+        onComplete: function() {
+          var ctx = this.chart.ctx;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
 
-                this.chart.config.data.datasets.forEach(function(dataset) {
-                    for (var key in dataset._meta) {
-                        var pointXBuffer = 0;
-                        var pointYBuffer = 0;
-                        if (dataset.label == 'Max. Temperature') {
-                            // For Max. Temperature Data
-                            dataset._meta[key].data.forEach(function(point){
-                                if (point._index == 0) {
-                                    pointXBuffer = 35;
-                                } else if (point._index > 0 && point._index < 4) {
-                                    pointXBuffer = 35;
-                                } else if (point._index == 4) {
-                                    pointXBuffer = -35;
-                                }
-                                if (dataset.data[point._index] == Math.max.apply(Math, maxTempData)){
-                                    ctx.font = "2vmin Monaco";
-                                    ctx.fillStyle="#FF0000";
-                                    ctx.fillText(dataset.data[point._index] + " ℉", point._view.x + pointXBuffer, point._view.y);
-                                } else {
-//                                    ctx.font = "15px Monaco";
-//                                    ctx.fillStyle="#848484";
-//                                    ctx.fillText(dataset.data[point._index] + " ℉", point._view.x + pointXBuffer, point._view.y);
-                                }
-                                pointXBuffer = 0;
-                            });
-                        } else if (dataset.label == 'Min. Temperature') {
-                            // For Min. Temperature Data
-                            dataset._meta[key].data.forEach(function(point){
-                                if (point._index == 0) {
-                                    pointXBuffer = 35;
-                                } else if (point._index > 0 && point._index < 4) {
-                                    pointXBuffer = 35;
-                                } else if (point._index == 4) {
-                                    pointXBuffer = -35;
-                                }
-                                if (dataset.data[point._index] == Math.min.apply(Math, minTempData)){
-                                    ctx.font = "2vmin Monaco";
-                                    ctx.fillStyle="blue";
-                                    ctx.fillText(dataset.data[point._index] + " ℉", point._view.x + pointXBuffer, point._view.y);
-                                } else {
-//                                    ctx.font = "15px Monaco";
-//                                    ctx.fillStyle="#848484";
-//                                    ctx.fillText(dataset.data[point._index] + " ℉", point._view.x + pointXBuffer, point._view.y);
-                                }
-                                pointXBuffer = 0;
-                            });
-                        } else if (dataset.label == 'Search Time Temperature') {
-                            // For Search Time Temperature Data
-                            dataset._meta[key].data.forEach(function(point){
-                                if (point._index == 0) {
-                                    var a = dataset.data[point._index];
-                                    var b = dataset.data[point._index + 1];
-                                    var difference = Math.abs(a - b);
-                                    if (difference < 5) {
-                                        pointYBuffer = 20;
-                                    }
-                                    console.log(difference);
-                                    pointXBuffer = 35;
-                                } else if (point._index > 0 && point._index < 4) {
-                                    pointXBuffer = -35;
-                                } else if (point._index == 4) {
-                                    pointXBuffer = -35;
-                                    ctx.font = "8px Monaco";
-                                    ctx.fillStyle="#848484";
-                                    ctx.fillText(searchTime, point._view.x + pointXBuffer + 65, point._view.y);
-                                }
-                                ctx.font = "2vmin Monaco";
-                                ctx.fillStyle="#3c3c3c";
-                                ctx.fillText(dataset.data[point._index] + " ℉", point._view.x + pointXBuffer, point._view.y + pointYBuffer);
-                                pointXBuffer = 0;
-                                pointYBuffer = 0;
-                            });
-                        }
-                        break;
+          this.chart.config.data.datasets.forEach(function(dataset) {
+            for(var key in dataset._meta) {
+              var pointXBuffer = 0;
+              var pointYBuffer = 0;
+              if(dataset.label == 'Max. Temperature') {
+                // For Max. Temperature Data
+                dataset._meta[key].data.forEach(function(point) {
+                  if(point._index == 0) {
+                    pointXBuffer = 35;
+                  } else if(point._index > 0 && point._index < 4) {
+                    pointXBuffer = 35;
+                  } else if(point._index == 4) {
+                    pointXBuffer = -35;
+                  }
+                  if(dataset.data[point._index] == Math.max.apply(Math, maxTempData)) {
+                    ctx.font = '2vmin Monaco';
+                    ctx.fillStyle = '#FF0000';
+                    ctx.fillText(dataset.data[point._index] + ' ℉', point._view.x + pointXBuffer, point._view.y);
+                  } else {
+                    //  ctx.font = '15px Monaco';
+                    //  ctx.fillStyle='#848484';
+                    //  ctx.fillText(dataset.data[point._index] + ' ℉', point._view.x + pointXBuffer, point._view.y);
+                  }
+                  pointXBuffer = 0;
+                });
+              } else if(dataset.label == 'Min. Temperature') {
+                // For Min. Temperature Data
+                dataset._meta[key].data.forEach(function(point) {
+                  if(point._index == 0) {
+                    pointXBuffer = 35;
+                  } else if(point._index > 0 && point._index < 4) {
+                    pointXBuffer = 35;
+                  } else if(point._index == 4) {
+                    pointXBuffer = -35;
+                  }
+                  if(dataset.data[point._index] == Math.min.apply(Math, minTempData)) {
+                    ctx.font = '2vmin Monaco';
+                    ctx.fillStyle = 'blue';
+                    ctx.fillText(dataset.data[point._index] + ' ℉', point._view.x + pointXBuffer, point._view.y);
+                  } else {
+                    //  ctx.font = '15px Monaco';
+                    //  ctx.fillStyle='#848484';
+                    //  ctx.fillText(dataset.data[point._index] + ' ℉', point._view.x + pointXBuffer, point._view.y);
+                  }
+                  pointXBuffer = 0;
+                });
+              } else if(dataset.label == 'Search Time Temperature') {
+                // For Search Time Temperature Data
+                dataset._meta[key].data.forEach(function(point) {
+                  if(point._index == 0) {
+                    var a = dataset.data[point._index];
+                    var b = dataset.data[point._index + 1];
+                    var difference = Math.abs(a - b);
+                    if(difference < 5) {
+                      pointYBuffer = 20;
                     }
-                })
-           }
-    }
+                    console.log(difference);
+                    pointXBuffer = 35;
+                  } else if(point._index > 0 && point._index < 4) {
+                    pointXBuffer = -35;
+                  } else if(point._index == 4) {
+                    pointXBuffer = -35;
+                    ctx.font = '8px Monaco';
+                    ctx.fillStyle = '#848484';
+                    ctx.fillText(searchTime, point._view.x + pointXBuffer + 65, point._view.y);
+                  }
+                  ctx.font = '2vmin Monaco';
+                  ctx.fillStyle = '#3c3c3c';
+                  ctx.fillText(dataset.data[point._index] + ' ℉', point._view.x + pointXBuffer, point._view.y + pointYBuffer);
+                  pointXBuffer = 0;
+                  pointYBuffer = 0;
+                });
+              }
+              break;
+            }
+          });
+        }
+      }
     };
-  });
+  }]);
 
   function getYears(input) {
     var current = new Date();
@@ -293,9 +286,9 @@
     }
 
     var difference = current.getFullYear() - input.getFullYear();
-    var mid = current.getFullYear() - difference/2 |0;
-    var q1 = mid - difference/4 |0;
-    var q3 = mid + difference/4 |0;
+    var mid = current.getFullYear() - difference / 2 | 0;
+    var q1 = mid - difference / 4 | 0;
+    var q3 = mid + difference / 4 | 0;
 
     dates[1].setYear(q1);
     dates[2].setYear(mid);
