@@ -113,21 +113,13 @@ public class HistoryServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("application/json");  
-		response.getWriter().println("\n\n\nHistoryServletTest\n\n\n");
-		response.getWriter().append("Served at: ").append(request.getContextPath() + "\n\n\n");
 		response.addHeader("SERVLET_STATUS", "ok");
 
 		int uid = UserManager.checkUidCookie (request.getCookies());
 
-		//generate json of historical records in database using simple-json
 		String jh = jsonHistory (uid);
-		response.getWriter().println("json-simple object=\n"+ jh);
+		response.getWriter().println(jh);
 
-		//generate json of historical records with manual json
-		//String jm = jsonHistoryManual (uid); 
-		//response.getWriter().println("\n\n\njsonHistoryManual=\n"+ jm);
-
-		response.addHeader("json", jh);
 		response.setStatus(200);
 	}
 

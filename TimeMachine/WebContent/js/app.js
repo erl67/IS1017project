@@ -8,7 +8,7 @@
       chartColors: ['#ffff00', '#00e2ff', '#7e44ff'],
     });
   }])
-    
+
   var dateLabels = [];
   var maxTempData = [];
   var currentTempData = [];
@@ -160,6 +160,7 @@
     myc.getUserHistory = function() {
       $http.get('./HistoryServlet')
         .then(function success(response) {
+          response.data.forEach(item => item.Date = new Date(item.Date));
           $rootScope.userHistory = response.data;
         }, function error(response) {
           $rootScope.displayError('Error getting your past searches');
