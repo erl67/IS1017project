@@ -42,7 +42,6 @@
 
   app.controller('PanelController', function($scope) {
     $scope.panel = 1;
-    this.showRawDSData = false;
     this.currentPanel = function(input) {
       return $scope.panel === input;
     };

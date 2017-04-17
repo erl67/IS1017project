@@ -48,13 +48,6 @@
         <my-history ng-show="pc.currentPanel(1)"></my-history>
         <historical-events ng-show="pc.currentPanel(2)"></historical-events>
         <graph ng-if="pc.currentPanel(3)"></graph>
-        <button class="btn-link" ng-click="pc.showRawDSData = !pc.showRawDSData">Toggle Raw Data</button>
-        <div ng-show="pc.showRawDSData">
-          <div ng-controller="darkSky as ds">
-            <pre><code>{{ ds.weatherData | json }}</code></pre>
-          </div>
-        </div>
-      </div>
       <a class="pull-right" href="https://darksky.net/poweredby/" target="_blank"><h5>Powered by Dark Sky</h5></a>
     </div>
   </body>
