@@ -6,7 +6,7 @@ public class UserManager {
 	
 	final static Boolean useSecureCookie = false;
 	final static int expiryTime = 60 * 60 * 8;  // 1h in seconds
-	final static String cookiePath = "/TimeMachine/";
+	final static String cookiePath = "/";
 		
 	public static int checkUidCookie (Cookie[] cookies){
 		int uid = -1;
