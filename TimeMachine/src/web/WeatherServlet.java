@@ -31,8 +31,8 @@ public class WeatherServlet extends HttpServlet {
 
 	private final String dsKey = "472f1ba38a5f3d13407fdb589d975c8c/";
 	private final String dsUrl = "https://api.darksky.net/forecast/";
-	private String dsLat = "37.8267";
-	private String dsLon = "-122.4233";
+	private String dsLat = "40.447347";
+	private String dsLon = "-79.952746";
 	private String dsLoc = dsLat + "," + dsLon + ",";
 	private long dsTime = -1L; 
 	private long ut = System.currentTimeMillis() / 1000L; //current epoch time
