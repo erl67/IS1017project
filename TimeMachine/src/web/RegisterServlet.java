@@ -67,8 +67,9 @@ public class RegisterServlet extends HttpServlet {
 		if (u != null) {
 			out.print("{\"success\": true, \"message\": \"Register Success for user: " + u.getUserName() + "\"}"); 
 			
-			response.addCookie(UserManager.makeCookie ("TimeMachine_cookie", u.getUserName()));
-			response.addCookie(UserManager.makeCookie ("TimeMachine_uid", String.valueOf(u.getId())));
+			String domain = request.getServerName();
+			response.addCookie(UserManager.makeCookie ("TimeMachine_cookie", u.getUserName(), domain));
+			response.addCookie(UserManager.makeCookie ("TimeMachine_uid", String.valueOf(u.getId()), domain));
 
 			response.addHeader("LOGIN_STATUS", "SUCCESS");
 			request.setAttribute("user", u);

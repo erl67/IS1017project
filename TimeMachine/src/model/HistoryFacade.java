@@ -30,7 +30,7 @@ public class HistoryFacade {
 			q.setParameter("id", user);
 			System.out.println(q.toString());
 			results = q.getResultList();
-			//for (WxHist i : results) System.out.println("hf.gH: "+i.getId() + " " + i.getWxUser() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude());
+			for (WxHist i : results) System.out.println("hf.gH: "+i.getId() + " " + i.getWxUser() + " " + i.getTitle() + " " + i.getDate() + " " + i.getLatitude() + " " + i.getLongitude());
 			return results;
 		}
 		catch (NoResultException d) {
