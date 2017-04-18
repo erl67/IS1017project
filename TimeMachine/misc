@@ -1,4 +1,21 @@
-database.txt
+random things for referrence
+
+		/*		//this block was used to test converting JSON date string from user, JS updated to pass date as Long so conversion is no longer necessary
+ 		String date = "1916-04-11T16:38:58.393Z";  //format of JSON input for testing	
+		try {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+			ZonedDateTime zdt = ZonedDateTime.parse(date,dtf);        
+			dsTime = zdt.toEpochSecond();
+			log("date string=" + date + "dsTime string=" + dsTime);
+			response.getWriter().println("date string=" + date + "\tepoch=" + dsTime + "\n\n");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}*/
+
+
+
+			//response.addHeader("LOGIN_STATUS", "SUCCESS");	//the commented response attributes were used prior to using AJAX when it was just a html form submission
+			//response.sendRedirect("/TimeMachine/");
 
 
 

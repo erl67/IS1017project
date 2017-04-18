@@ -15,12 +15,13 @@ import org.json.simple.Jsoner;
 import model.UrlManager;
 
 /**
- * Servlet implementation class EventServlet
+ * Servlet implementation class EventServlet. The servlet queries the history API
  */
 @WebServlet({ "/EventServlet", "/e" })
 public class EventServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	//variables that used to construct the history API call URL
 	private final String mlUrl = "http://history.muffinlabs.com/date/";
 	private String mlMonth = "";
 	private String mlDay = "";
@@ -43,17 +44,17 @@ public class EventServlet extends HttpServlet {
 		response.addHeader("SERVLET_STATUS", "ok");
 		response.setStatus(200);
 
+		//create a Calendar object to hold the date, Calendar is then used to deconstruct the Month and Day as the API needs it
 		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(ut * 1000L);
+		cal.setTimeInMillis(ut * 1000L);	//have to convert unix time from seconds back to millis. Calendar doesn't allow setting time in pure seconds.
 		response.getWriter().println("Calendar=" +  cal.toString() + "\n");
 
-		mlMonth = String.valueOf(cal.get(Calendar.MONTH)+1);
+		mlMonth = String.valueOf(cal.get(Calendar.MONTH)+1);	//Months start at 0 so must +1
 		mlDay = String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
 
-		String events = null;
 		String mlAPI = mlUrl + mlMonth + "/" + mlDay;
 
-		events = UrlManager.URLConnectionReader(mlAPI);
+		String events = UrlManager.URLConnectionReader(mlAPI);
 
 		response.getWriter().println("ml URL= " +  mlAPI +"\n\nml API json=\n"+ events);
 		response.addHeader("json", events);
@@ -71,18 +72,23 @@ public class EventServlet extends HttpServlet {
 
 		JsonObject queryJson = Jsoner.deserialize(request.getReader().readLine(), new JsonObject());
 
+		//create a Calendar object to hold the date entered by the user. Calendar is then used to deconstruct the Month and Day as the API needs it
 		Calendar cal = Calendar.getInstance();
 		
+		//set Calendar to the time passed via Json (which is in Long seconds)
 		cal.setTimeInMillis(queryJson.getLong("date"));
 		
+		//Extract Month and Day from the Calendar
 		mlMonth = String.valueOf(cal.get(Calendar.MONTH)+1);
 		mlDay = String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
 
 		String mlAPI = mlUrl + mlMonth + "/" + mlDay;
 		log ("mlAPI= " + mlAPI);
 
+		//Send the API URL to the URL reader and receive a String of Json in return
 		String events = UrlManager.URLConnectionReader(mlAPI);
 
+		//If API worked then send the results back else send an error message
 		if (events.length() > 8) {
 			response.setStatus(200);
 			response.getWriter().println(events);

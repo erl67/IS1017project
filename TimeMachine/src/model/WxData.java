@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 /**
  * The persistent class for the wx_data database table.
- * 
+ * Not currently used, but available if we ever need to make Weather Objects from the API returns
  */
 @Entity
 @Table(name="wx_data")

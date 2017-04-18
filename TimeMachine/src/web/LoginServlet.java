@@ -33,11 +33,17 @@ public class LoginServlet extends HttpServlet {
 		super();
 	}
 
+	/**
+	 * Login user via EntityManager based on username and password
+	 */
 	public WxUser LoginBean (String u, String p){
 		System.out.println("Login Bean, u="+u+" p="+p);
 		return uf.checkLogin(u, p);
 	}
 
+	/**
+	 * Login user via JDBC connection. Not currently used but available as a backup.
+	 */
 	public String LoginBean2 (String u, String p){
 		System.out.println("Login Bean2:  u="+u+" p="+p);
 		return uf.checkLogin2(u, p);
@@ -65,12 +71,14 @@ public class LoginServlet extends HttpServlet {
 		response.setContentType("application/json");  
 		PrintWriter out = response.getWriter();  
 
+		//read username and password sent via Json
 		JsonObject loginJson = Jsoner.deserialize(request.getReader().readLine(), new JsonObject());
 		String username = loginJson.getString("username");
 		String password = loginJson.getString("password");
 
-		WxUser u = LoginBean(username, password);
+		WxUser u = LoginBean(username, password);	//call method to login user
 
+		//if login returns a valid user entity then session is created and cookies are set, otherwise returns an error message
 		if (u != null) {
 			// Create a session object if it is already not  created.
 			HttpSession session = request.getSession(true);
@@ -82,7 +90,7 @@ public class LoginServlet extends HttpServlet {
 			String userIDKey = new String(u.getUserName()); 
 			int userID = u.getId();
 
-			// Check if this is new comer on your web page.
+			// Check if this is new comer on your web page. All session attributes returned to browser via JSESSION cookie
 			if (session.isNew()){
 				session.setAttribute(userIDKey, userID);
 				log("NewSession//UIDKey:"+userIDKey+" UID:"+userID+" VisitCount:"+visitCount+" createTime:"+ createTime+ " lastAccess:"+lastAccessTime+" Session:"+session.toString());
@@ -94,17 +102,20 @@ public class LoginServlet extends HttpServlet {
 			}
 			session.setAttribute(visitCountKey,  visitCount);
 			
+			//this gets the server domain to add to the cookie, would be more useful on a static host
 			String domain = request.getServerName();
-			log("\n\nDomain=" + domain + "\n\n");
+			log("\tDomain=" + domain + "");
+			
+			//call method to create Cookies for the user entity returned
 			response.addCookie(UserManager.makeCookie ("TimeMachine_cookie", u.getUserName(), domain));
 			response.addCookie(UserManager.makeCookie ("TimeMachine_uid", String.valueOf(u.getId()), domain));
 
 			out.print("{\"success\": true, \"message\": \"Login Success for user: " + u.getUserName() + "\"}");  
 
-			//response.addHeader("LOGIN_STATUS", "SUCCESS");
+			//response.addHeader("LOGIN_STATUS", "SUCCESS");	//the commented response attributes were used prior to using AJAX when it was just a html form submission
 			//response.sendRedirect("/TimeMachine/");
 			request.setAttribute("user", u);
-			request.setAttribute("session", session);
+			request.setAttribute("session", session);	//adds JSESSION cookie
 			response.setStatus(200);
 		} else {
 			out.print("{\"success\": false, \"message\": \"Username or password is incorrect!\"}");  

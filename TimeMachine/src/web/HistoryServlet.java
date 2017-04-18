@@ -43,24 +43,31 @@ public class HistoryServlet extends HttpServlet {
 		super();
 	}
 
+	/**
+	 * This returns the User Entity of the logged in user, based on the uid of the cookie
+	 * This is necessary because to create and store a history object in the database the WxUser Entity is a foreign key 
+	 * which needs to be present. The actual entity object must be used for EM rather than the foreign key in SQL which is only an INT
+	 */
 	public WxUser GetUserBean (int uid){
 		System.out.println("GetUser Bean, user="+uid);
 		return hf.getUser(uid);
 	}
 
+	/**
+	 * Return list of Historical Searches by a user, which will later be converted into Json for the webpage
+	 */
 	public List<WxHist> GetHistoryBean (int uid){
 		System.out.println("GetHistory Bean, user="+uid);
 		return hf.getHistory(uid);
 	}
 
 	/**
-	 * @param uid
-	 * @return String of JSON history
+	 * Converts the Historical Search list into Json format
 	 */
 	public String jsonHistory (int uid) {
 
-		List<WxHist> historyList = GetHistoryBean(uid);		//List of history data from database based on logged-in user
-		JsonArray ja = new JsonArray();		//Json array to store info from List
+		List<WxHist> historyList = GetHistoryBean(uid);		//get list of history data from database based on logged-in user
+		JsonArray ja = new JsonArray();						//Json array to store info from List
 
 		//iterate through List adding each item to a new JsonObject, then store the object in Array at end
 		for (WxHist i : historyList) {
@@ -114,6 +121,7 @@ public class HistoryServlet extends HttpServlet {
 		response.setContentType("application/json");  
 		response.addHeader("SERVLET_STATUS", "ok");
 
+		//call UserManger to determine which user is logged in based on the cookies, get history and return it to the browser
 		int uid = UserManager.checkUidCookie (request.getCookies());
 
 		String jh = jsonHistory (uid);
@@ -131,11 +139,16 @@ public class HistoryServlet extends HttpServlet {
 		log(request.toString()); log(response.toString()); 
 		response.setContentType("application/json");  
 
+		//Find out which user is logged in based on cookies
 		int uid = UserManager.checkUidCookie (request.getCookies());
 
+		//Json object which contains the user's requested search 
 		JsonObject queryJson = Jsoner.deserialize(request.getReader().readLine(), new JsonObject());
+		
+		//create a new HistoryObject to hold the user data and eventually persist in the database
 		WxHist history = new WxHist();
 
+		//Add the user data to the history object
 		String date = queryJson.getString("date"); log("Date=" + date);
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
 		try {
@@ -148,8 +161,10 @@ public class HistoryServlet extends HttpServlet {
 		history.setLongitude(queryJson.getString("longitude"));
 		history.setWxUser(GetUserBean(uid));
 
+		//call method to persist the history object, returns true or false 
 		boolean checkAddition = hf.addHistory(history, uid);
 
+		//if history saves to database it will display on the browser or else send an error
 		if (checkAddition == true) {
 			response.setStatus(200);
 			String jh = jsonHistory(uid);

@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
 
@@ -18,13 +19,17 @@ public class UserFacade {
 
 	@PersistenceContext(unitName = "TimeMachine")
 	EntityManager em;
-	
+
 	static Query q;
 
 	public UserFacade(){
 		super();
 	}
 
+	/**
+	 * Receives username and password from the Login form and queries the database for a match
+	 * Returns the User Object on success or null if the info doesn't match the database
+	 */
 	public WxUser checkLogin (String user, String pass){
 
 		WxUser userResult = null;
@@ -33,9 +38,8 @@ public class UserFacade {
 			Query q = em.createQuery("SELECT u FROM WxUser u WHERE ((u.userName= :name) AND (u.userPass= :pass))");
 			q.setParameter("name", user);
 			q.setParameter("pass", pass);
-			System.out.println(q.toString());
+			System.out.println(q.toString());	//print Query to console to check for errors
 			userResult = (WxUser) q.getSingleResult();
-			System.out.println(q.toString());
 			return userResult;
 		}
 		catch (NoResultException d) {
@@ -50,16 +54,22 @@ public class UserFacade {
 			return null;
 		}
 	}
-	
+
+	/**
+	 * Receives username and password from registration form via servlet
+	 * Creates a new User object with the passed strings and attempts to persist it to the database
+	 * The database constraints control whether the information is acceptable, so if the username is not unique or the password is too short
+	 * then we receive a PersistenceException. Any error returns a null user, which will show an error in the browser and tell the user to try again
+	 */
 	public WxUser registerUser (String user, String pass) {
-		
+
 		WxUser r = new WxUser ();
 		r.setUserName(user);
 		r.setUserPass(pass);
-		
+
 		try {
 			em.persist(r);
-			r = checkLogin(r.getUserName(), r.getUserPass()); //pulls the object so we know what the autoincrement ID is
+			r = checkLogin(r.getUserName(), r.getUserPass()); //pulls the object so we update & know what the autoincrement UID is for the cookie
 			return r;
 		}
 		catch (NoResultException d) {
@@ -69,14 +79,21 @@ public class UserFacade {
 		catch (NullPointerException e) {
 			e.printStackTrace();
 			return null;
+		}
+		catch (PersistenceException g) {
+			g.printStackTrace();
+			return null;
 		} catch (Exception f) {
 			f.printStackTrace();
 			return null;
 		}
-
 	}
-	
 
+
+	/**
+	 * Alternate method to access database via JDBC connection. Not currently used as EntityManager works 
+	 */
+	@SuppressWarnings("static-method")
 	public String checkLogin2 (String user, String pass) {
 
 		Connection con = null;
@@ -112,8 +129,6 @@ public class UserFacade {
 				e.printStackTrace();
 			}
 		}
-
-		//if (u==null) u="INVALID USER";
 		return u;
 	}
 

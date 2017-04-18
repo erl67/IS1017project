@@ -8,28 +8,38 @@ import java.net.URL;
 import java.net.URLConnection;
 
 /**
- * @author E
- * Receive a String of a URL and return String of results
+ * This class is for handling URL calls from the servlets
  */
 public class UrlManager {
-	
+
+	/**
+	 * Receive a String of a URL and return String of results Useful for making
+	 * API calls that return Json (which is a string)
+	 */
 	public static String URLConnectionReader(String urlS) {
+
 		URL url;
-		URLConnection yc;
+		URLConnection con;
 		String inputLine;
 		String results = "";
+
 		try {
+
 			url = new URL(urlS);
-			yc = url.openConnection();
+			con = url.openConnection();
 
 			try {
-				BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
+
+				BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
 				while ((inputLine = in.readLine()) != null) {
 					results += inputLine;
 				}
+
 				in.close();
 			}
-			catch (Exception e){
+
+			catch (Exception e) {
 				e.printStackTrace();
 			}
 
@@ -40,5 +50,4 @@ public class UrlManager {
 		}
 		return results;
 	}
-
 }

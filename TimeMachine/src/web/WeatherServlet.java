@@ -25,6 +25,7 @@ import model.WeatherFacade;
 public class WeatherServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	//variables used to construct API call
 	private final String dsKey = "472f1ba38a5f3d13407fdb589d975c8c/";
 	private final String dsUrl = "https://api.darksky.net/forecast/";
 	private final String exclude = "?exclude=minutely,hourly,flags";
@@ -52,24 +53,12 @@ public class WeatherServlet extends HttpServlet {
 		response.getWriter().append("Served at: ").append(request.getContextPath()+"\n\n");
 		response.addHeader("SERVLET_STATUS", "ok");
 		response.setStatus(200);
+		
+		dsTime = Long.valueOf(new Date().getTime()/1000L);	//returns current unix epoch time
 
-		String date = "1916-04-11T16:38:58.393Z";  //format of JSON input for testing
-		try {
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
-			ZonedDateTime zdt = ZonedDateTime.parse(date,dtf);        
-			dsTime = zdt.toEpochSecond();
-			log("date string=" + date + "dsTime string=" + dsTime);
-			response.getWriter().println("date string=" + date + "\tepoch=" + dsTime + "\n\n");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		dsTime = Long.valueOf(new Date().getTime()/1000L);
-
-		String wx = null;
 		String dsAPI = dsUrl + dsKey + dsLoc + dsTime;
-
-		wx = UrlManager.URLConnectionReader(dsAPI);
+		
+		String wx = UrlManager.URLConnectionReader(dsAPI);		//call method to parse API URL return to string
 
 		response.getWriter().println("ds URL= " + dsAPI +"\n\nds API json=\n"+ wx);
 		response.addHeader("json", wx);
@@ -85,18 +74,19 @@ public class WeatherServlet extends HttpServlet {
 		log(request.toString()); log(response.toString());
 		response.setContentType("application/json"); 
 
+		//take Json input from server and add to API variables
 		JsonObject queryJson = Jsoner.deserialize(request.getReader().readLine(), new JsonObject());
-
 		dsTime = queryJson.getLong("date");
 		dsLat = queryJson.getString("latitude");
 		dsLon = queryJson.getString("longitude");
 		dsLoc = dsLat + "," + dsLon + ",";
 
-		String dsAPI = dsUrl + dsKey + dsLoc + 	dsTime + exclude;
+		String dsAPI = dsUrl + dsKey + dsLoc + 	dsTime + exclude;	//URL string
 		log ("dsAPI= " + dsAPI);
 
-		String wx = UrlManager.URLConnectionReader(dsAPI);
+		String wx = UrlManager.URLConnectionReader(dsAPI);	//call API
 
+		//verify Api returns data and return to browser, or send error if API fails
 		if (wx.length() > 8) {
 			response.setStatus(200);
 			response.getWriter().println(wx);

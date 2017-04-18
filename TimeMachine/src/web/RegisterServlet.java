@@ -31,6 +31,9 @@ public class RegisterServlet extends HttpServlet {
 		super();
 	}
 
+	/**
+	 * Send username and password to UserFacade to create and persist a new entity, returns entity, or null on failure
+	 */
 	public WxUser RegisterBean (String u, String p){
 		WxUser r = null;
 		System.out.println("Register Bean, u="+u+" p="+p);
@@ -56,14 +59,16 @@ public class RegisterServlet extends HttpServlet {
 		
 		log(request.toString()); log(response.toString());
 		PrintWriter out = response.getWriter(); 
-		
 		response.setContentType("application/json"); 
+		
+		//read username and password sent via Json
 		JsonObject loginJson = Jsoner.deserialize(request.getReader().readLine(), new JsonObject());
 		String username = loginJson.getString("username");
 		String password = loginJson.getString("password");
 
-		WxUser u = RegisterBean(username, password);
-
+		WxUser u = RegisterBean(username, password);	//call method to register user
+		
+		// if registration succeeds user is logged in via cookie, otherwise an error message is sent
 		if (u != null) {
 			out.print("{\"success\": true, \"message\": \"Register Success for user: " + u.getUserName() + "\"}"); 
 			
