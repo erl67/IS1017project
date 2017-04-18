@@ -185,10 +185,9 @@
         return;
       }
       hc.date = date;
-      /*var month = date.getMonth() + 1;
+      var month = date.getMonth() + 1;
       var day = date.getDate();
-      //var url = `https://crossorigin.me/http://history.muffinlabs.com/date/${month}/${day}`;*/
-      $http.post('./EventServlet', JSON.stringify({date: date.getTime() / 1000 | 0}))
+      $http.post('./EventServlet', JSON.stringify({month: month, day: day}))
         .then(function success(response) {
           hc.historyData = response.data.data.Events.filter((item) => !(item.year.includes('BC') || parseInt(item.year) < 1940));
           console.log(hc.historyData);

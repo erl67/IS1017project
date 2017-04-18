@@ -76,13 +76,11 @@ public class EventServlet extends HttpServlet {
 		Calendar cal = Calendar.getInstance();
 		
 		//set Calendar to the time passed via Json (which is in Long seconds)
-		cal.setTimeInMillis(queryJson.getLong("date"));
+		String month = queryJson.getString("month");
+		String day = queryJson.getString("day");
 		
-		//Extract Month and Day from the Calendar
-		mlMonth = String.valueOf(cal.get(Calendar.MONTH)+1);
-		mlDay = String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
 
-		String mlAPI = mlUrl + mlMonth + "/" + mlDay;
+		String mlAPI = mlUrl + month + "/" + day;
 		log ("mlAPI= " + mlAPI);
 
 		//Send the API URL to the URL reader and receive a String of Json in return
