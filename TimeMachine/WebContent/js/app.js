@@ -50,13 +50,14 @@
     };
   }]);
 
-  app.controller('ErrorController', ['$rootScope', function($rootScope) {
+  app.controller('ErrorController', ['$rootScope', '$timeout', function($rootScope, $timeout) {
     var error = this;
     error.message = '';
     error.showError = false;
     $rootScope.displayError = function(message) {
       error.message = message;
       error.showError = true;
+      $timeout(error.hideError, 3000);
     };
     error.hideError = function() {
       error.showError = false;
