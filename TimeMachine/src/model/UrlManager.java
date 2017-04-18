@@ -7,6 +7,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
+/**
+ * @author E
+ * Receive a String of a URL and return String of results
+ */
 public class UrlManager {
 	
 	public static String URLConnectionReader(String urlS) {
