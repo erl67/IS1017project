@@ -34,9 +34,9 @@
     };
     nc.checkLogin();
     nc.logout = function() {
-      $cookies.remove('TimeMachine_cookie', {path: '/'});
-      $cookies.remove('TimeMachine_uid', {path: '/'});
-      nc.checkLogin();
+      $cookies.remove('TimeMachine_cookie', {path: '/', domain: '.localhost'});
+      $cookies.remove('TimeMachine_uid', {path: '/', domain: '.localhost'});
+      window.location.href = '.';
     };
   }]);
 
@@ -180,13 +180,15 @@
         return;
       }
       hc.date = date;
-      var month = date.getMonth() + 1;
+      /*var month = date.getMonth() + 1;
       var day = date.getDate();
-      var url = `https://crossorigin.me/http://history.muffinlabs.com/date/${month}/${day}`;
-      $http.get(url)
+      //var url = `https://crossorigin.me/http://history.muffinlabs.com/date/${month}/${day}`;*/
+      $http.post('./EventServlet', JSON.stringify({date: date.getTime() / 1000 | 0}))
         .then(function success(response) {
           hc.historyData = response.data.data.Events.filter((item) => !(item.year.includes('BC') || parseInt(item.year) < 1940));
-        }, function failure() {
+          console.log(hc.historyData);
+        }, function failure(response) {
+          console.log(response.data.error);
           $rootScope.displayError('Cannot fetch historical events');
         });
     };
