@@ -94,7 +94,6 @@ public class LoginServlet extends HttpServlet {
 			}
 			session.setAttribute(visitCountKey,  visitCount);
 			
-//			String domain = request.getServerName() + ":" + request.getServerPort();
 			String domain = request.getServerName();
 			log("\n\nDomain=" + domain + "\n\n");
 			response.addCookie(UserManager.makeCookie ("TimeMachine_cookie", u.getUserName(), domain));

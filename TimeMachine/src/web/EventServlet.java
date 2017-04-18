@@ -1,11 +1,6 @@
 package web;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.Calendar;
 
 import javax.servlet.ServletException;
@@ -16,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
+
+import model.UrlManager;
 
 /**
  * Servlet implementation class EventServlet
@@ -56,7 +53,7 @@ public class EventServlet extends HttpServlet {
 		String events = null;
 		String mlAPI = mlUrl + mlMonth + "/" + mlDay;
 
-		events = URLConnectionReader(mlAPI);
+		events = UrlManager.URLConnectionReader(mlAPI);
 
 		response.getWriter().println("ml URL= " +  mlAPI +"\n\nml API json=\n"+ events);
 		response.addHeader("json", events);
@@ -84,7 +81,7 @@ public class EventServlet extends HttpServlet {
 		String mlAPI = mlUrl + mlMonth + "/" + mlDay;
 		log ("mlAPI= " + mlAPI);
 
-		String events = URLConnectionReader(mlAPI);
+		String events = UrlManager.URLConnectionReader(mlAPI);
 
 		if (events.length() > 8) {
 			response.setStatus(200);
@@ -93,35 +90,6 @@ public class EventServlet extends HttpServlet {
 			response.setStatus(500);
 			response.getWriter().println("{ \"error\": \"Event API call did not complete successfully\" }");
 		}
-	}
-
-	public String URLConnectionReader(String urlS) {
-		URL url;
-		URLConnection yc;
-		String inputLine;
-		String wx = "";
-		try {
-			url = new URL(urlS);
-			yc = url.openConnection();
-
-			try {
-				BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
-				while ((inputLine = in.readLine()) != null) {
-					wx += inputLine;
-					log("inputLine= " + inputLine + " / wx = " + wx);
-				}
-				in.close();
-			}
-			catch (Exception e){
-				e.printStackTrace();
-			}
-
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return wx;
 	}
 
 }

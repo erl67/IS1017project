@@ -1,11 +1,6 @@
 package web;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -20,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
 
+import model.UrlManager;
 import model.WeatherFacade;
 
 /**
@@ -73,7 +69,7 @@ public class WeatherServlet extends HttpServlet {
 		String wx = null;
 		String dsAPI = dsUrl + dsKey + dsLoc + dsTime;
 
-		wx = URLConnectionReader(dsAPI);
+		wx = UrlManager.URLConnectionReader(dsAPI);
 
 		response.getWriter().println("ds URL= " + dsAPI +"\n\nds API json=\n"+ wx);
 		response.addHeader("json", wx);
@@ -99,7 +95,7 @@ public class WeatherServlet extends HttpServlet {
 		String dsAPI = dsUrl + dsKey + dsLoc + 	dsTime + exclude;
 		log ("dsAPI= " + dsAPI);
 
-		String wx = URLConnectionReader(dsAPI);
+		String wx = UrlManager.URLConnectionReader(dsAPI);
 
 		if (wx.length() > 8) {
 			response.setStatus(200);
@@ -108,35 +104,6 @@ public class WeatherServlet extends HttpServlet {
 			response.setStatus(500);
 			response.getWriter().println("{ \"error\": \"Weather API call did not complete successfully\" }");
 		}
-	}
-
-	public String URLConnectionReader(String urlS) {
-		URL url;
-		URLConnection yc;
-		String inputLine;
-		String wx = "";
-		try {
-			url = new URL(urlS);
-			yc = url.openConnection();
-
-			try {
-				BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
-				while ((inputLine = in.readLine()) != null) {
-					wx += inputLine;
-					log("inputLine= " + inputLine + " / wx = " + wx);
-				}
-				in.close();
-			}
-			catch (Exception e){
-				e.printStackTrace();
-			}
-
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return wx;
 	}
 
 }
