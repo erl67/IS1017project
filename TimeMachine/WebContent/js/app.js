@@ -129,8 +129,13 @@
 
       ic.weatherData = [];
       yearsArray.forEach(function(date, index) {
-        var url = `https://crossorigin.me/https://api.darksky.net/forecast/472f1ba38a5f3d13407fdb589d975c8c/${queryInfo.latitude},${queryInfo.longitude},${JSON.stringify(Math.round(date.getTime()/1000))}?exclude=minutely,hourly,flags`;
-        $http.get(url)
+        var request = {
+          date: date.getTime() / 1000 | 0,
+          latitude: queryInfo.latitude,
+          longitude: queryInfo.longitude
+        };
+
+        $http.post('./WeatherServlet', JSON.stringify(request))
           .then(function success(response) {
             ic.weatherData[index] = response.data;
             // Get dates, minimum temperature, maximum temperature, and summary of weather for each date and store in arrays.

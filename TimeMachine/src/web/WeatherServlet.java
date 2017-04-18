@@ -31,6 +31,7 @@ public class WeatherServlet extends HttpServlet {
 
 	private final String dsKey = "472f1ba38a5f3d13407fdb589d975c8c/";
 	private final String dsUrl = "https://api.darksky.net/forecast/";
+	private final String exclude = "?exclude=minutely,hourly,flags";
 	private String dsLat = "40.447347";
 	private String dsLon = "-79.952746";
 	private String dsLoc = dsLat + "," + dsLon + ",";
@@ -84,28 +85,18 @@ public class WeatherServlet extends HttpServlet {
 	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
 
 		log(request.toString()); log(response.toString());
 		response.setContentType("application/json"); 
 
 		JsonObject queryJson = Jsoner.deserialize(request.getReader().readLine(), new JsonObject());
 
-		String date = queryJson.getString("date");
-		
-		try {
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
-			ZonedDateTime zdt = ZonedDateTime.parse(date,dtf);        
-			dsTime = zdt.toEpochSecond();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+		dsTime = queryJson.getLong("date");
 		dsLat = queryJson.getString("latitude");
 		dsLon = queryJson.getString("longitude");
 		dsLoc = dsLat + "," + dsLon + ",";
 
-		String dsAPI = dsUrl + dsKey + dsLoc + dsTime;
+		String dsAPI = dsUrl + dsKey + dsLoc + 	dsTime + exclude;
 		log ("dsAPI= " + dsAPI);
 
 		String wx = URLConnectionReader(dsAPI);
@@ -115,7 +106,7 @@ public class WeatherServlet extends HttpServlet {
 			response.getWriter().println(wx);
 		} else {
 			response.setStatus(500);
-			response.getWriter().println("{ \"error\": \"API call did not complete successfully\" }");
+			response.getWriter().println("{ \"error\": \"Weather API call did not complete successfully\" }");
 		}
 	}
 
