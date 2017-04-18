@@ -6,17 +6,30 @@
 }
 .lg-image {
   width: 100%;
-  height: 70vh;
+  height: 60vh;
   background: url('https://images.unsplash.com/photo-1469365556835-3da3db4c253b');
   background-size: cover;
   display: flex;
   justify-content: flex-end;
   align-items: center;
 }
+#tagline {
+  margin-top: 1.5em;
+}
 #btn-signin {
   border: .1em solid white;
   border-radius: .1em;
   margin-right: .1em;
+}
+#btn-input {
+  margin-top: .5em;
+  margin-left: 0;
+}
+.bottom-row > .col-xs-9 {
+  padding-right: 5px;
+}
+.bottom-row > .col-xs-3 {
+  padding-left: 5px;
 }
 .alert > a {
   color: inherit;
@@ -27,4 +40,11 @@
 }
 #DSLogo {
   width: 7em;
+}
+.form-control {
+  background-color: rgba(255, 255, 255, 0.5);
+  border: none;
+}
+.form-control:focus {
+  border-bottom: 3px #2780e3 solid;
 }

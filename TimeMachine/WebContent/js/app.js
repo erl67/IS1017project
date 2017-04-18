@@ -85,9 +85,9 @@
             ic.mapsData = response.data.results[0];
             ic.queryInfo.latitude = ic.mapsData.geometry.location.lat;
             ic.queryInfo.longitude = ic.mapsData.geometry.location.lng;
-            ic.queryInfo.title = ic.mapsData.formatted_address;
+            ic.queryInfo.title = ic.title || ic.mapsData.formatted_address;
             $rootScope.location = {
-              longAddress: ic.mapsData.formatted_address,
+              title: ic.queryInfo.title,
               date: ic.queryInfo.date
             };
             $rootScope.getDarkSkyData(ic.queryInfo);
@@ -105,9 +105,10 @@
       }
     };
 
-    $rootScope.runWeatherQuery = function(latitude, longitude, date) {
+    $rootScope.runWeatherQuery = function(latitude, longitude, date, title) {
       ic.location = `${latitude}, ${longitude}`;
       ic.queryInfo.date = date;
+      ic.title = title;
       ic.submit();
     };
 
@@ -116,7 +117,8 @@
         queryInfo.username = $rootScope.user.username || null;
         $http.post('/TimeMachine/HistoryServlet', queryInfo)
           .then(function success(response) {
-            console.log(response.data);
+            response.data.forEach(item => item.Date = new Date(item.Date));
+            $rootScope.userHistory = response.data;
           }, function error(response) {
             console.log(response.data);
           });
@@ -161,7 +163,7 @@
     };
     myc.getUserHistory();
     myc.showPerviousQuery = function(item) {
-      $rootScope.runWeatherQuery(item.Latitude, item.Longitude, item.Date);
+      $rootScope.runWeatherQuery(item.Latitude, item.Longitude, item.Date, item.Title);
     };
   }]);
 
@@ -178,12 +180,7 @@
       var url = `https://crossorigin.me/http://history.muffinlabs.com/date/${month}/${day}`;
       $http.get(url)
         .then(function success(response) {
-          hc.historyData = response.data.data.Events.filter(function(item) {
-            if(item.year.includes('BC') || parseInt(item.year) < 1940) {
-              return false;
-            }
-            return true;
-          });
+          hc.historyData = response.data.data.Events.filter((item) => !(item.year.includes('BC') || parseInt(item.year) < 1940));
         }, function failure() {
           $rootScope.displayError('Cannot fetch historical events');
         });

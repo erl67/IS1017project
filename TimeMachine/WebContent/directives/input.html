@@ -5,19 +5,34 @@
     </div>
     <div class="col-sm-6">
       <form ng-submit="ic.submit()">
-        <fieldset class="row">
-          <div class="form-group col-sm-6">
-            <label for="location">Enter location and see weather results:</label>
-            <div class="input-group">
-              <span class="input-group-addon">
-                <a ng-click="ic.geolocate()"><span class="glyphicon glyphicon-map-marker"></span></a>
-              </span>
-              <input type="text" name="location" class="form-control" ng-model="ic.location" placeholder="address, city, zipcode, etc." ng-keypress="($event.charCode==13)? ic.submit() : return">
+        <fieldset>
+          <div class="row">
+            <div class="form-group col-sm-12">
+              <label for="title">Give your search a title</label>
+              <input class="form-control" type="text" name="title" ng-model="ic.title" placeholder="Start of WWII">
             </div>
           </div>
-          <div class="form-group col-sm-6">
-            <label for="date">Enter starting date and see historical events:</label>
-            <input class="form-control" name="date" type="date" ng-model="ic.queryInfo.date" value="{{ ic.queryInfo.date | date: 'yyyy-MM-dd'}}" placeholder="yyyy-mm-dd" ng-keypress="($event.charCode==13)? ic.submit() : return">
+          <div class="row">
+            <div class="form-group col-sm-6">
+              <label for="location">Enter location and see weather results:</label>
+              <div class="input-group">
+                <span class="input-group-addon">
+                  <a ng-click="ic.geolocate()"><span class="glyphicon glyphicon-map-marker"></span></a>
+                </span>
+                <input type="text" name="location" class="form-control" ng-model="ic.location" placeholder="address, city, zipcode, etc." ng-keypress="($event.charCode==13)? ic.submit() : return">
+              </div>
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="date">Enter starting date and see historical events:</label>
+              <div class="row bottom-row">
+                <div class="col-xs-9">
+                  <input class="form-control" name="date" type="date" ng-model="ic.queryInfo.date" value="{{ ic.queryInfo.date | date: 'yyyy-MM-dd'}}" placeholder="yyyy-mm-dd" ng-keypress="($event.charCode==13)? ic.submit() : return" min="1940-01-01" max="2020-01-01">
+                </div>
+                <div class="col-xs-3">
+                  <button class="btn btn-primary btn-sm" id="btn-input" type="submit">Submit</button>
+                </div>
+              </div>
+            </div>
           </div>
         </fieldset>
       </form>

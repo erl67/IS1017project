@@ -1,7 +1,7 @@
 <section id="chartPanel">
   <div>
     <div>
-      <h2>{{ location.longAddress }}</h2>
+      <h2>{{ location.title }}</h2>
       <h4 class="text-primary">{{ location.date | date: 'longDate'}}</h4>
     </div>
     <canvas id="line" class="chart chart-line" chart-data="data" chart-labels="labels" chart-series="series" chart-options="options" chart-dataset-override="datasetOverride" chart-click="onClick">
