@@ -40,13 +40,13 @@
     };
   }]);
 
-  app.controller('PanelController', ['$scope', function($scope) {
-    $scope.panel = 1;
+  app.controller('PanelController', ['$rootScope', function($rootScope) {
+    $rootScope.panel = 1;
     this.currentPanel = function(input) {
-      return $scope.panel === input;
+      return $rootScope.panel === input;
     };
-    $scope.setPanel = function(input) {
-      $scope.panel = input;
+    $rootScope.setPanel = function(input) {
+      $rootScope.panel = input;
     };
   }]);
 
@@ -72,6 +72,7 @@
       ic.queryInfo.date = new Date(ic.queryInfo.date);
       $rootScope.getHistory(ic.queryInfo.date);
       if(!ic.location) {
+        $rootScope.setPanel(2);
         return;
       }
       $http.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${ic.location.replace(' ', '+')}`)
@@ -104,16 +105,22 @@
       }
     };
 
+    $rootScope.runWeatherQuery = function(latitude, longitude, date) {
+      ic.location = `${latitude}, ${longitude}`;
+      ic.queryInfo.date = date;
+      ic.submit();
+    };
+
     $rootScope.getDarkSkyData = function(queryInfo) {
-      //if($rootScope.user.loggedIn) {
-      queryInfo.username = $rootScope.user.username || null;
-      $http.post('/TimeMachine/HistoryServlet', queryInfo)
-        .then(function success(response) {
-          console.log(response.data);
-        }, function error(response) {
-          console.log(response.data);
-        });
-      //}
+      if($rootScope.user.loggedIn) {
+        queryInfo.username = $rootScope.user.username || null;
+        $http.post('/TimeMachine/HistoryServlet', queryInfo)
+          .then(function success(response) {
+            console.log(response.data);
+          }, function error(response) {
+            console.log(response.data);
+          });
+      }
 
       var yearsArray = getYears(queryInfo.date);
       searchTime = queryInfo.date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
@@ -132,6 +139,7 @@
             minTempData[index] = ic.weatherData[index].daily.data[0].temperatureMin;
             dateSummary[index] = ic.weatherData[index].daily.data[0].summary;
 
+            $rootScope.setPanel(3);
           }, function failure(response) {
             $rootScope.displayError(response.data.error);
           });
@@ -152,14 +160,19 @@
         });
     };
     myc.getUserHistory();
+    myc.showPerviousQuery = function(item) {
+      $rootScope.runWeatherQuery(item.Latitude, item.Longitude, item.Date);
+    };
   }]);
 
   app.controller('HistoryController', ['$rootScope', '$http', function($rootScope, $http) {
     var hc = this;
+    hc.date = new Date();
     $rootScope.getHistory = function(date) {
       if(!date) {
         return;
       }
+      hc.date = date;
       var month = date.getMonth() + 1;
       var day = date.getDate();
       var url = `https://crossorigin.me/http://history.muffinlabs.com/date/${month}/${day}`;

@@ -15,14 +15,10 @@
         <tr>
           <th>Title</th>
           <th>Date</th>
-          <th>Latitude</th>
-          <th>Longitude</th>
         </tr>
-        <tr ng-repeat="item in userHistory | limitTo: 5">
-          <td>{{ item.Title }}</td>
+        <tr ng-repeat="item in userHistory | orderBy: '-Id' | limitTo: 10">
+          <td><a ng-click="mhc.showPerviousQuery(item)">{{ item.Title }}</a></td>
           <td>{{ item.Date | date: 'longDate'}}</td>
-          <td>{{ item.Latitude }}</td>
-          <td>{{ item.Longitude }}</td>
         </tr>
       </table>
     </div>
