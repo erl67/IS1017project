@@ -280,7 +280,7 @@
                     pointXBuffer = -35;
                     ctx.font = '8px Monaco';
                     ctx.fillStyle = '#848484';
-                    ctx.fillText(searchTime, point._view.x + pointXBuffer + 65, point._view.y);
+                    ctx.fillText(searchTime, point._view.x + pointXBuffer + 60, point._view.y);
                   }
                   ctx.font = '2vmin Monaco';
                   ctx.fillStyle = '#3c3c3c';
