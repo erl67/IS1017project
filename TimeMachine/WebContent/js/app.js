@@ -17,7 +17,7 @@
   var dateSummary = [];
   var searchTime;
 
-  app.controller('NavbarController', ['$rootScope', '$cookies', '$location', function($rootScope, $cookies, $location) {
+  app.controller('NavbarController', ['$rootScope', '$cookies', function($rootScope, $cookies) {
     var nc = this;
     nc.checkLogin = function() {
       var username = $cookies.get('TimeMachine_cookie');
@@ -34,9 +34,8 @@
     };
     nc.checkLogin();
     nc.logout = function() {
-      var domain = ($location.host() === 'localhost') ? `.${$location.host()}` : $location.host();
-      $cookies.remove('TimeMachine_cookie', {path: '/', domain: domain});
-      $cookies.remove('TimeMachine_uid', {path: '/', domain: domain});
+      $cookies.remove('TimeMachine_cookie', {path: '/'});
+      $cookies.remove('TimeMachine_uid', {path: '/'});
       window.location.href = '.';
     };
   }]);
