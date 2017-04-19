@@ -34,10 +34,7 @@
     };
     nc.checkLogin();
     nc.logout = function() {
-      var domain = $location.host();
-      if(domain === 'localhost') {
-        domain = `.${domain}`;
-      }
+      var domain = ($location.host() === 'localhost') ? `.${$location.host()}` : $location.host();
       $cookies.remove('TimeMachine_cookie', {path: '/', domain: domain});
       $cookies.remove('TimeMachine_uid', {path: '/', domain: domain});
       window.location.href = '.';
@@ -70,8 +67,10 @@
 
   app.controller('InputController', ['$http', '$rootScope', function($http, $rootScope) {
     var ic = this;
+    var defaultDate = new Date();
+    defaultDate.setFullYear(defaultDate.getFullYear() - 6);
     ic.queryInfo = {
-      date: new Date()
+      date: defaultDate
     };
     ic.submit = function() {
       ic.queryInfo.date = new Date(ic.queryInfo.date);
