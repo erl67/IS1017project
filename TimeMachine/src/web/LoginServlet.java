@@ -103,12 +103,12 @@ public class LoginServlet extends HttpServlet {
 			session.setAttribute(visitCountKey,  visitCount);
 			
 			//this gets the server domain to add to the cookie, would be more useful on a static host
-			String domain = request.getServerName();
-			log("\tDomain=" + domain + "");
+			//String domain = request.getServerName();
+			//log("\tDomain=" + domain + "");
 			
 			//call method to create Cookies for the user entity returned
-			response.addCookie(UserManager.makeCookie ("TimeMachine_cookie", u.getUserName(), domain));
-			response.addCookie(UserManager.makeCookie ("TimeMachine_uid", String.valueOf(u.getId()), domain));
+			response.addCookie(UserManager.makeCookie ("TimeMachine_cookie", u.getUserName()));
+			response.addCookie(UserManager.makeCookie ("TimeMachine_uid", String.valueOf(u.getId())));
 
 			out.print("{\"success\": true, \"message\": \"Login Success for user: " + u.getUserName() + "\"}");  
 
