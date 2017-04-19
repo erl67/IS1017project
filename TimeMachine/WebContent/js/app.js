@@ -118,7 +118,7 @@
 
     $rootScope.getDarkSkyData = function(queryInfo) {
       if($rootScope.user.loggedIn) {
-        queryInfo.username = $rootScope.user.username || null;
+        queryInfo.username = $rootScope.user.username;
         $http.post('/TimeMachine/HistoryServlet', queryInfo)
           .then(function success(response) {
             response.data.forEach(item => item.Date = new Date(item.Date));
@@ -170,7 +170,9 @@
           console.log(response);
         });
     };
-    myc.getUserHistory();
+    if($rootScope.user.loggedIn) {
+      myc.getUserHistory();
+    }
     myc.showPerviousQuery = function(item) {
       $rootScope.runWeatherQuery(item.Latitude, item.Longitude, item.Date, item.Title);
     };
