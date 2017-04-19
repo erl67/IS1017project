@@ -37,7 +37,7 @@
   app.directive('graph', function() {
     return {
       restrict: 'E',
-      controller: 'ChartController',
+      controller: 'ChartController as cc',
       templateUrl: 'directives/graph.html'
     };
   });
