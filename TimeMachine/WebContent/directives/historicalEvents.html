@@ -1,4 +1,7 @@
 <section id="historyPanel">
+  <div ng-hide="hc.historyData">
+    <h4 class="text-primary text-center">Enter a <strong>date</strong> above to see historical events for that date</h4>
+  </div>
   <div class="panel panel-primary" ng-if="hc.historyData">
     <div class="panel-heading">
       <h4>What happened on <strong>{{ hc.date | date: 'MMMM dd'}}</strong>?</h4>

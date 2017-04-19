@@ -123,7 +123,8 @@
             response.data.forEach(item => item.Date = new Date(item.Date));
             $rootScope.userHistory = response.data;
           }, function error(response) {
-            console.log(response.data);
+            $rootScope.displayError('Unable to add query to your history');
+            console.log(response.data.error);
           });
       }
 
@@ -166,7 +167,7 @@
           $rootScope.userHistory = response.data;
         }, function error(response) {
           $rootScope.displayError('Error getting your past searches');
-          console.log(response);
+          console.log(response.data.error);
         });
     };
     if($rootScope.user.loggedIn) {
@@ -190,7 +191,6 @@
       $http.post('./EventServlet', JSON.stringify({month: month, day: day}))
         .then(function success(response) {
           hc.historyData = response.data.data.Events.filter((item) => !(item.year.includes('BC') || parseInt(item.year) < 1940));
-          console.log(hc.historyData);
         }, function failure(response) {
           console.log(response.data.error);
           $rootScope.displayError('Cannot fetch historical events');
@@ -209,7 +209,8 @@
       dateSummary
     ];
     cc.getHighTempDifference = function() {
-      cc.percentage = (maxTempData[4] / maxTempData[0] - 1) * 100 | 2;
+      // calculate the percent difference bewteen the first and last date
+      cc.percentage = (maxTempData[4] / maxTempData[0] - 1) * 100 | 0;
       cc.comparisionWord = 'warmer';
       cc.isWarmer = true;
       if(cc.percentage < 0) {
@@ -226,6 +227,7 @@
       animation: {
         onComplete: function() {
           cc.getHighTempDifference();
+          $scope.$apply();
           var ctx = this.chart.ctx;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'bottom';

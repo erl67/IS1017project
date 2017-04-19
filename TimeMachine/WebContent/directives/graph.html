@@ -1,5 +1,8 @@
 <section id="chartPanel">
-  <div>
+  <div ng-hide="labels[0]">
+    <h4 class="text-primary text-center">Enter a <strong>date</strong> and <strong>location</strong> above to see a graph of the weather</h4>
+  </div>
+  <div ng-if="labels[0]">
     <div>
       <h2>{{ location.title }}</h2>
       <h4 class="text-primary">{{ labels[0] }} - {{ labels[4] }}</h4>
