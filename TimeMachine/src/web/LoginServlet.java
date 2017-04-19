@@ -54,7 +54,7 @@ public class LoginServlet extends HttpServlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.getWriter().println("\n\n\nLoginServletTest\n\n\n");
+		response.getWriter().println("/n/n/nLoginServletTest/n/n/n");
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 		response.addHeader("SERVLET_STATUS", "ok");
 		response.setStatus(200);
@@ -80,27 +80,27 @@ public class LoginServlet extends HttpServlet {
 
 		//if login returns a valid user entity then session is created and cookies are set, otherwise returns an error message
 		if (u != null) {
-			// Create a session object if it is already not  created.
-			HttpSession session = request.getSession(true);
-			Date createTime = new Date(session.getCreationTime());
-			Date lastAccessTime = new Date(session.getLastAccessedTime());
-
-			Integer visitCount = new Integer(0);
-			String visitCountKey = new String("visitCount");
-			String userIDKey = new String(u.getUserName()); 
-			int userID = u.getId();
-
-			// Check if this is new comer on your web page. All session attributes returned to browser via JSESSION cookie
-			if (session.isNew()){
-				session.setAttribute(userIDKey, userID);
-				log("NewSession//UIDKey:"+userIDKey+" UID:"+userID+" VisitCount:"+visitCount+" createTime:"+ createTime+ " lastAccess:"+lastAccessTime+" Session:"+session.toString());
-			} else {
-				visitCount = (Integer)session.getAttribute(visitCountKey);
-				visitCount = visitCount + 1;
-				userID = (int) session.getAttribute(userIDKey);
-				log("OldSession//UIDKey:"+userIDKey+" UID:"+userID+" VisitCount:"+visitCount+" createTime:"+ createTime+ " lastAccess:"+lastAccessTime+" Session:"+session.toString());
-			}
-			session.setAttribute(visitCountKey,  visitCount);
+//			// Create a session object if it is already not  created.
+//			HttpSession session = request.getSession(true);
+//			Date createTime = new Date(session.getCreationTime());
+//			Date lastAccessTime = new Date(session.getLastAccessedTime());
+//
+//			Integer visitCount = new Integer(0);
+//			String visitCountKey = new String("visitCount");
+//			String userIDKey = new String(u.getUserName()); 
+//			int userID = u.getId();
+//
+//			// Check if this is new comer on your web page. All session attributes returned to browser via JSESSION cookie
+//			if (session.isNew()){
+//				session.setAttribute(userIDKey, userID);
+//				log("NewSession//UIDKey:"+userIDKey+" UID:"+userID+" VisitCount:"+visitCount+" createTime:"+ createTime+ " lastAccess:"+lastAccessTime+" Session:"+session.toString());
+//			} else {
+//				visitCount = (Integer)session.getAttribute(visitCountKey);
+//				visitCount = visitCount + 1;
+//				userID = (int) session.getAttribute(userIDKey);
+//				log("OldSession//UIDKey:"+userIDKey+" UID:"+userID+" VisitCount:"+visitCount+" createTime:"+ createTime+ " lastAccess:"+lastAccessTime+" Session:"+session.toString());
+//			}
+//			session.setAttribute(visitCountKey,  visitCount);
 			
 			//this gets the server domain to add to the cookie, would be more useful on a static host
 			//String domain = request.getServerName();
@@ -115,7 +115,7 @@ public class LoginServlet extends HttpServlet {
 			//response.addHeader("LOGIN_STATUS", "SUCCESS");	//the commented response attributes were used prior to using AJAX when it was just a html form submission
 			//response.sendRedirect("/TimeMachine/");
 			request.setAttribute("user", u);
-			request.setAttribute("session", session);	//adds JSESSION cookie
+			//request.setAttribute("session", session);	//adds JSESSION cookie
 			response.setStatus(200);
 		} else {
 			out.print("{\"success\": false, \"message\": \"Username or password is incorrect!\"}");  

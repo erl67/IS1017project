@@ -120,6 +120,7 @@ public class HistoryServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("application/json");  
 		response.addHeader("SERVLET_STATUS", "ok");
+		log ("/n/nHistory Servlet doGet/n/n");
 
 		//call UserManger to determine which user is logged in based on the cookies, get history and return it to the browser
 		int uid = UserManager.checkUidCookie (request.getCookies());
