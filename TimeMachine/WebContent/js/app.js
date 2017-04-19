@@ -198,6 +198,7 @@
   }]);
 
   app.controller('ChartController', ['$scope', function($scope) {
+    var cc = this;
     $scope.labels = dateLabels;
     $scope.series = ['Max. Temperature', 'Search Time Temperature', 'Min. Temperature', 'Summary'];
     $scope.data = [
@@ -206,12 +207,24 @@
       minTempData,
       dateSummary
     ];
+    cc.getHighTempDifference = function() {
+      cc.percentage = (maxTempData[4] / maxTempData[0] - 1) * 100 | 2;
+      cc.comparisionWord = 'warmer';
+      cc.isWarmer = true;
+      if(cc.percentage < 0) {
+        cc.percentage *= -1;
+        cc.comparisionWord = 'colder';
+        cc.isWarmer = false;
+      }
+    };
+    cc.getHighTempDifference();
     $scope.onClick = function(points, evt) {
       console.log(points, evt);
     };
     $scope.options = {
       animation: {
         onComplete: function() {
+          cc.getHighTempDifference();
           var ctx = this.chart.ctx;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'bottom';

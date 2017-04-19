@@ -6,6 +6,7 @@
     </div>
     <canvas id="line" class="chart chart-line" chart-data="data" chart-labels="labels" chart-series="series" chart-options="options" chart-dataset-override="datasetOverride" chart-click="onClick">
     </canvas>
+    <h5>The high for {{ labels[4] }} was <strong>{{ cc.percentage }}%</strong> <span ng-class="{ 'text-danger': cc.isWarmer, 'text-primary': !cc.isWarmer }">{{ cc.comparisionWord }}</span> than for {{ labels[0] }}</h5>
     <a class="pull-right" href="https://darksky.net/poweredby/" target="_blank">
       <img id="DSLogo" src="https://darksky.net/dev/img/attribution/poweredby.png">
     </a>
