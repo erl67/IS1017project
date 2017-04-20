@@ -304,6 +304,12 @@
                   } else if(point._index > 0 && point._index < 4) {
                     pointXBuffer = -35;
                   } else if(point._index == 4) {
+                    var a = dataset.data[point._index];
+                    var b = dataset.data[point._index - 1];
+                    var difference = Math.abs(a - b);
+                    if (difference < 5) {
+                        pointYBuffer = 20;
+                    }
                     pointXBuffer = -35;
                     ctx.font = '8px Monaco';
                     ctx.fillStyle = '#848484';
