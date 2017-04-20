@@ -45,6 +45,7 @@ public class RegisterServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.getWriter().println("\n\n\nRegisterServletTest\n\n\n");
 		response.getWriter().append("Served at: ").append(request.getContextPath());
@@ -55,6 +56,7 @@ public class RegisterServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		log(request.toString()); log(response.toString());
@@ -85,5 +87,6 @@ public class RegisterServlet extends HttpServlet {
 			request.setAttribute("user", "");
 			response.addHeader("LOGIN_STATUS", "FAILURE");
 		}
+		out.close();
 	}
 }

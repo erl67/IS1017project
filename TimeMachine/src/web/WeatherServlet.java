@@ -1,8 +1,6 @@
 package web;
 
 import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import javax.ejb.EJB;

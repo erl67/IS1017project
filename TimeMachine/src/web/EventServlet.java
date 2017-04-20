@@ -72,15 +72,10 @@ public class EventServlet extends HttpServlet {
 
 		JsonObject queryJson = Jsoner.deserialize(request.getReader().readLine(), new JsonObject());
 
-		//create a Calendar object to hold the date entered by the user. Calendar is then used to deconstruct the Month and Day as the API needs it
-		Calendar cal = Calendar.getInstance();
-		
-		//set Calendar to the time passed via Json (which is in Long seconds)
-		String month = queryJson.getString("month");
-		String day = queryJson.getString("day");
-		
+		String mlMonth = queryJson.getString("month");
+		String mlDay = queryJson.getString("day");
 
-		String mlAPI = mlUrl + month + "/" + day;
+		String mlAPI = mlUrl + mlMonth + "/" + mlDay;
 		log ("mlAPI= " + mlAPI);
 
 		//Send the API URL to the URL reader and receive a String of Json in return

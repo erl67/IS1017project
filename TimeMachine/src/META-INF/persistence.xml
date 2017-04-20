@@ -15,6 +15,7 @@
 			<property name="javax.persistence.jdbc.password" value="erl67@pitt.edu" />
 			<property name="eclipselink.dll-generation" value="drop-and-create-tables" />
 			<property name="eclipselink.dll-generation.output-mode" value="database" />
+			<property name="eclipselink.target-server" value="GlassFish"/>
 		</properties>
 	</persistence-unit>
 </persistence>

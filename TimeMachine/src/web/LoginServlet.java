@@ -2,6 +2,7 @@ package web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Enumeration;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -9,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
@@ -75,35 +77,19 @@ public class LoginServlet extends HttpServlet {
 		String password = loginJson.getString("password");
 
 		WxUser u = LoginBean(username, password);	//call method to login user
-
+		
 		//if login returns a valid user entity then session is created and cookies are set, otherwise returns an error message
 		if (u != null) {
-//			// Create a session object if it is already not  created.
-//			HttpSession session = request.getSession(true);
-//			Date createTime = new Date(session.getCreationTime());
-//			Date lastAccessTime = new Date(session.getLastAccessedTime());
-//
-//			Integer visitCount = new Integer(0);
-//			String visitCountKey = new String("visitCount");
-//			String userIDKey = new String(u.getUserName()); 
-//			int userID = u.getId();
-//
-//			// Check if this is new comer on your web page. All session attributes returned to browser via JSESSION cookie
-//			if (session.isNew()){
-//				session.setAttribute(userIDKey, userID);
-//				log("NewSession//UIDKey:"+userIDKey+" UID:"+userID+" VisitCount:"+visitCount+" createTime:"+ createTime+ " lastAccess:"+lastAccessTime+" Session:"+session.toString());
-//			} else {
-//				visitCount = (Integer)session.getAttribute(visitCountKey);
-//				visitCount = visitCount + 1;
-//				userID = (int) session.getAttribute(userIDKey);
-//				log("OldSession//UIDKey:"+userIDKey+" UID:"+userID+" VisitCount:"+visitCount+" createTime:"+ createTime+ " lastAccess:"+lastAccessTime+" Session:"+session.toString());
-//			}
-//			session.setAttribute(visitCountKey,  visitCount);
-			
-			//this gets the server domain to add to the cookie, would be more useful on a static host
-			//String domain = request.getServerName();
-			//log("\tDomain=" + domain + "");
-			
+			// Create a session object, then iterate through it 
+			HttpSession session = request.getSession(true);
+			session.setAttribute("Username", u.getUserName());
+			session.setAttribute("uid", u.getId());
+			Enumeration<String> s = session.getAttributeNames();
+			while (s.hasMoreElements()){
+				String a = s.nextElement().toString();
+				log("\ta:" + a + " v:" + session.getAttribute(a));
+			}
+
 			//call method to create Cookies for the user entity returned
 			response.addCookie(UserManager.makeCookie ("TimeMachine_cookie", u.getUserName()));
 			response.addCookie(UserManager.makeCookie ("TimeMachine_uid", String.valueOf(u.getId())));
@@ -113,15 +99,15 @@ public class LoginServlet extends HttpServlet {
 			//response.addHeader("LOGIN_STATUS", "SUCCESS");	//the commented response attributes were used prior to using AJAX when it was just a html form submission
 			//response.sendRedirect("/TimeMachine/");
 			request.setAttribute("user", u);
-			//request.setAttribute("session", session);	//adds JSESSION cookie
+			request.setAttribute("session", session);	//adds JSESSION cookie
 			response.setStatus(200);
 		} else {
 			out.print("{\"success\": false, \"message\": \"Username or password is incorrect!\"}");  
 			response.setStatus(401);
 			request.setAttribute("user", "");
-			//response.getWriter().print("fail");
-			//response.addHeader("LOGIN_STATUS", "FAILURE");
+			//response.addHeader("LOGIN_STATUS", "FAILURE");	//these were used prior to JS login
 			//response.sendRedirect("/TimeMachine/login/");
 		}
+		out.close();
 	}
 }
