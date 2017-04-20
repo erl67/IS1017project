@@ -226,6 +226,17 @@
     $scope.options = {
       animation: {
         onComplete: function() {
+            
+          // Function to download the chart itself
+          function downloadCanvas(link, canvasId, filename) {
+              link.href = document.getElementById(canvasId).toDataURL();
+              link.download = filename;
+          }
+
+          document.getElementById('download').addEventListener('click', function() {
+              downloadCanvas(this, 'line', 'WeatherTimeMachineChart.png');
+          }, false);
+
           cc.getHighTempDifference();
           $scope.$apply();
           var ctx = this.chart.ctx;
