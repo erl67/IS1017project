@@ -61,3 +61,15 @@ CREATE TABLE IF NOT EXISTS wx_hist (
 ) Engine=InnoDB;
 
 ALTER TABLE wx_user ADD timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+#Query to judge number of API calls
+SELECT 
+    DATE_FORMAT(DATE(timestamp), '%M') AS 'Month',
+    DAY(timestamp) AS 'Date',
+    DATE_FORMAT(DATE(timestamp), '%j') AS 'Day of Year',
+    COUNT(DAY(Timestamp)) AS 'Rows',
+    (COUNT(DAY(Timestamp))) * 5 AS 'API calls estimate'
+FROM
+    erl67is1017.wx_hist
+    Group BY day(timestamp), Month(timestamp), Year(timestamp);
+
