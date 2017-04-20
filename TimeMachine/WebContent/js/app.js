@@ -205,8 +205,7 @@
     $scope.data = [
       maxTempData,
       currentTempData,
-      minTempData,
-      dateSummary
+      minTempData
     ];
     cc.getHighTempDifference = function() {
       // calculate the percent difference bewteen the first and last date
@@ -224,6 +223,15 @@
       console.log(points, evt);
     };
     $scope.options = {
+      tooltips: {
+            enabled: true,
+            callbacks: {
+                afterTitle: function(tooltipItems, data) { 
+                    return data.datasets[3].data[tooltipItems[0].index];
+                }
+            }
+        },
+      legend: {display: true},
       animation: {
         onComplete: function() {
             
