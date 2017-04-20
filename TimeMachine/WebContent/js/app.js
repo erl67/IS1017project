@@ -227,7 +227,7 @@
             enabled: true,
             callbacks: {
                 afterTitle: function(tooltipItems, data) { 
-                    return data.datasets[3].data[tooltipItems[0].index];
+                    return dateSummary[tooltipItems[0].index];
                 }
             }
         },
