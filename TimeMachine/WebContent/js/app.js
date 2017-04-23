@@ -198,20 +198,24 @@
     };
   }]);
 
+  // Create Chart
   app.controller('ChartController', ['$scope', function($scope) {
     var cc = this;
+    // Set the x-axis labels.
     $scope.labels = dateLabels;
+    // Add Each Series to the Chart and their Label.
     $scope.series = ['Max. Temperature', 'Search Time Temperature', 'Min. Temperature', 'Summary'];
     $scope.data = [
       maxTempData,
       currentTempData,
       minTempData
     ];
+      
     cc.getHighTempDifference = function() {
       // calculate the percent difference bewteen the first and last date
       cc.percentage = (maxTempData[4] / maxTempData[0] - 1) * 100 | 0;
       cc.comparisionWord = 'warmer';
-      cc.isWarmer = true;
+      cc.isWarmer = true;   
       if(cc.percentage < 0) {
         cc.percentage *= -1;
         cc.comparisionWord = 'colder';
@@ -223,6 +227,7 @@
       console.log(points, evt);
     };
     $scope.options = {
+      // Add the Date Summary Weather to each data point.
       tooltips: {
             enabled: true,
             callbacks: {
@@ -231,10 +236,11 @@
                 }
             }
         },
+      // Display the legend.
       legend: {display: true},
+      // When the chart is generated, add details and make some alterations.
       animation: {
         onComplete: function() {
-            
           // Function to download the chart itself
           function downloadCanvas(link, canvasId, filename) {
               link.href = document.getElementById(canvasId).toDataURL();
@@ -250,7 +256,8 @@
           var ctx = this.chart.ctx;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'bottom';
-
+            
+          // Add text for the hottest point, coolest point, and for the Search Time Temperature.
           this.chart.config.data.datasets.forEach(function(dataset) {
             for(var key in dataset._meta) {
               var pointXBuffer = 0;
@@ -301,6 +308,7 @@
                 // For Search Time Temperature Data
                 dataset._meta[key].data.forEach(function(point) {
                   if(point._index == 0) {
+                    // Calculate how close the first and second points are and spread them if needed for smaller screens.
                     var a = dataset.data[point._index];
                     var b = dataset.data[point._index + 1];
                     var difference = Math.abs(a - b);
@@ -312,6 +320,7 @@
                   } else if(point._index > 0 && point._index < 4) {
                     pointXBuffer = -35;
                   } else if(point._index == 4) {
+                    // Calculate how close the last and second to last points are and spread them if needed for smaller screens.
                     var a = dataset.data[point._index];
                     var b = dataset.data[point._index - 1];
                     var difference = Math.abs(a - b);
